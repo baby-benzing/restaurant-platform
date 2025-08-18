@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-inter: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-playfair: 'Playfair Display', Georgia, serif;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  ::selection {
+    @apply bg-primary-600 text-white;
+  }
+}
+
+@layer components {
+  .hero-gradient {
+    background: linear-gradient(
+      135deg,
+      theme('colors.primary.950') 0%,
+      theme('colors.primary.900') 50%,
+      theme('colors.primary.800') 100%
+    );
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}

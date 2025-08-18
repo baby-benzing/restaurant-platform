@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: restaurant-platform-db
+    environment:
+      POSTGRES_USER: restaurant_admin
+      POSTGRES_PASSWORD: restaurant_pass_2024
+      POSTGRES_DB: restaurant_platform
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U restaurant_admin -d restaurant_platform']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    name: restaurant_platform_postgres_data
