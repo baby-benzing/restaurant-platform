@@ -1,0 +1,43 @@
+# Page snapshot
+
+```yaml
+- alert
+- main:
+  - heading "Admin Dashboard" [level=1]
+  - paragraph: Welcome back, admin@pave46.com
+  - link "View Site":
+    - /url: /
+  - button "Logout"
+  - paragraph: Total Page Views
+  - paragraph: 12,543
+  - text: ↑12.5% from last month 👀
+  - paragraph: Unique Visitors
+  - paragraph: 3,421
+  - text: ↓5.2% from last month 👥
+  - paragraph: Menu Views
+  - paragraph: 8,932
+  - text: ↑23.1% from last month 📖
+  - paragraph: Active Users
+  - paragraph: "4"
+  - text: 0% from last month ✅
+  - heading "Recent Activity" [level=3]
+  - text: 📝
+  - paragraph: Updated cocktail menu prices
+  - text: 30 minutes ago • by admin@pave46.com 🕐
+  - paragraph: Modified Saturday opening hours
+  - text: 2 hours ago • by editor@pave46.com 👤
+  - paragraph: Admin user logged in
+  - text: 5 hours ago • by admin@pave46.com ⚙️
+  - paragraph: Updated contact information
+  - text: 1 day ago • by admin@pave46.com
+  - heading "Quick Actions" [level=3]
+  - link "➕ Add Menu Item":
+    - /url: /admin/menu/new
+  - link "🕐 Update Hours":
+    - /url: /admin/hours
+  - link "📊 View Analytics":
+    - /url: /admin/analytics
+  - link "👥 Manage Users":
+    - /url: /admin/users
+  - text: "Logged in as: ADMIN"
+```

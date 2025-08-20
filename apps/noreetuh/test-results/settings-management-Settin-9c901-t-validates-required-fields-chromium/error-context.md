@@ -1,0 +1,53 @@
+# Page snapshot
+
+```yaml
+- main:
+  - heading "Contact & Information" [level=1]
+  - paragraph: Manage your restaurant information and contact details
+  - link "Back to Dashboard":
+    - /url: /admin/dashboard
+  - heading "General Information" [level=2]
+  - text: Restaurant Name *
+  - textbox "Restaurant Name *"
+  - paragraph: Restaurant Name is required
+  - text: Tagline
+  - textbox "Tagline": French Bistro in Hudson Square
+  - text: Description
+  - textbox "Description": An intimate neighborhood cocktail bar in Hudson Square blending Parisian charm with New York sophistication.
+  - text: Cuisine Type *
+  - combobox "Cuisine Type *":
+    - option "French" [selected]
+    - option "Italian"
+    - option "American"
+    - option "Asian"
+    - option "Mediterranean"
+    - option "Other"
+  - heading "Contact Information" [level=2]
+  - text: Phone Number *
+  - textbox "Phone Number *": (212) 555-0123
+  - text: Email *
+  - textbox "Email *": info@pave46.com
+  - text: Street Address *
+  - textbox "Street Address *": 46 Hudson Square
+  - text: City *
+  - textbox "City *": New York
+  - text: State *
+  - textbox "State *": NY
+  - text: ZIP Code *
+  - textbox "ZIP Code *": "10013"
+  - heading "Social Media" [level=2]
+  - text: Instagram
+  - textbox "Instagram": https://instagram.com/pave46
+  - text: Facebook
+  - textbox "Facebook": https://facebook.com/pave46
+  - text: Twitter/X
+  - textbox "Twitter/X"
+  - text: Yelp
+  - textbox "Yelp"
+  - text: OpenTable
+  - textbox "OpenTable"
+  - button "Reset"
+  - button "Save Changes" [disabled]
+  - text: You have unsaved changes
+- alert
+```

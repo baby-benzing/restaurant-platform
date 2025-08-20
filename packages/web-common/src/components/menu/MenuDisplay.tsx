@@ -14,6 +14,12 @@ export interface MenuDisplayProps extends React.HTMLAttributes<HTMLDivElement> {
   menu: MenuData;
   hideUnavailable?: boolean;
   columns?: 1 | 2;
+  variant?: 'default' | 'minimal' | 'detailed' | 'image-focused';
+  showPrices?: boolean;
+  showDescriptions?: boolean;
+  showDietary?: boolean;
+  showImages?: boolean;
+  onItemClick?: (item: any) => void;
 }
 
 export const MenuDisplay = React.forwardRef<HTMLDivElement, MenuDisplayProps>(
@@ -21,6 +27,12 @@ export const MenuDisplay = React.forwardRef<HTMLDivElement, MenuDisplayProps>(
     menu, 
     hideUnavailable = false,
     columns = 1,
+    variant = 'default',
+    showPrices = true,
+    showDescriptions = true,
+    showDietary = true,
+    showImages = false,
+    onItemClick,
     className, 
     ...props 
   }, ref) => {

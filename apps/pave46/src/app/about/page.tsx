@@ -1,103 +1,169 @@
 import { Metadata } from 'next';
-import { Container, Section, Grid, Card } from '@restaurant-platform/web-common';
+import Image from 'next/image';
+import { Container, Section } from '@restaurant-platform/web-common';
 
 export const metadata: Metadata = {
-  title: 'About',
-  description: 'Learn about Pavé46, an intimate neighborhood cocktail bar in Hudson Square blending Parisian charm with New York sophistication.',
+  title: 'About | Pavé',
+  description: 'Founded by Chef Jonghun Won, Pavé brings a European-style café and bakery experience to the heart of Midtown Manhattan.',
   openGraph: {
-    title: 'About | Pavé46',
+    title: 'About | Pavé',
     description: 'Learn about our story and philosophy.',
   },
 };
 
 export default function AboutPage() {
   return (
-    <main>
-      <Section spacing="lg" className="pt-24">
+    <main className="pt-20">
+      {/* Story Section */}
+      <Section spacing="xl" className="bg-white">
         <Container>
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-neutral-900 text-center mb-8">
+          <div className="max-w-7xl mx-auto">
+            <h1 className="text-5xl md:text-6xl font-serif font-bold text-neutral-900 mb-12">
               Our Story
             </h1>
             
-            <div className="prose prose-lg mx-auto">
-              <p className="text-neutral-600 leading-relaxed">
-                Nestled in the heart of Hudson Square, Pavé46 is more than just a cocktail bar—it's 
-                a love letter to the timeless elegance of Parisian bistros and the vibrant energy 
-                of New York City.
-              </p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+              <div className="space-y-6">
+                <p className="text-lg text-neutral-700 leading-relaxed">
+                  Founded by Chef Jonghun Won, Pavé brings a European-style café and 
+                  bakery experience to the heart of Midtown Manhattan. Our journey 
+                  began with a simple belief: there's nothing better than freshly baked 
+                  bread, and nothing better than a sandwich built on that bread.
+                </p>
+                
+                <p className="text-lg text-neutral-700 leading-relaxed">
+                  Chef Won, originally from South Korea, trained in theology before 
+                  discovering his passion for pastry. After serving as Executive Pastry 
+                  Chef at Jungsik Seoul and helping establish the 2-Michelin starred 
+                  Jungsik New York, he graduated from the Culinary Institute of America 
+                  and now brings his expertise to Pavé.
+                </p>
+                
+                <p className="text-lg text-neutral-700 leading-relaxed">
+                  At Pavé, we're committed to maintaining traditional bread-making 
+                  techniques while creating innovative sandwiches and pastries that 
+                  delight our customers every day.
+                </p>
+              </div>
               
-              <p className="text-neutral-600 leading-relaxed">
-                Since opening our doors, we've been dedicated to creating an intimate space where 
-                neighbors become friends, where every cocktail tells a story, and where the art of 
-                hospitality is celebrated nightly.
-              </p>
-
-              <p className="text-neutral-600 leading-relaxed">
-                Our carefully curated menu features classic cocktails with a modern twist, an 
-                exceptional wine selection focusing on small producers, and refined small plates 
-                that perfectly complement your drinks.
-              </p>
+              {/* Image Grid */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="relative h-64 rounded-lg overflow-hidden">
+                  <Image
+                    src="/images/restaurant/food-1.jpg"
+                    alt="Freshly prepared food"
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-300"
+                    sizes="(max-width: 768px) 100vw, 25vw"
+                  />
+                </div>
+                <div className="relative h-64 rounded-lg overflow-hidden">
+                  <Image
+                    src="/images/restaurant/bar-1.jpg"
+                    alt="Chef at work"
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-300"
+                    sizes="(max-width: 768px) 100vw, 25vw"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </Container>
       </Section>
 
-      <Section spacing="lg" background="gray">
+      {/* Philosophy Section */}
+      <Section spacing="xl" className="bg-neutral-50">
         <Container>
-          <h2 className="text-3xl font-serif font-bold text-neutral-900 text-center mb-12">
-            Our Philosophy
-          </h2>
-          
-          <Grid cols={3} gap="lg" responsive>
-            <Card padding="lg">
-              <h3 className="text-xl font-serif font-bold text-neutral-900 mb-3">
-                Quality First
-              </h3>
-              <p className="text-neutral-600">
-                We source only the finest ingredients, from our spirits to our garnishes, 
-                ensuring every drink is crafted to perfection.
-              </p>
-            </Card>
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-neutral-900 mb-8">
+                Our Philosophy
+              </h2>
+              
+              <blockquote className="border-l-4 border-primary-600 pl-6 my-8">
+                <p className="text-xl text-primary-600 italic font-serif leading-relaxed">
+                  "We believe there's nothing better than freshly baked 
+                  bread, and that there's nothing better than a sandwich 
+                  built on that bread. Fresh is best!"
+                </p>
+              </blockquote>
+              
+              <div className="mt-8 space-y-4">
+                <h3 className="text-2xl font-serif font-bold text-neutral-900">
+                  Chef Jonghun Won
+                </h3>
+                <ul className="space-y-2 text-lg text-neutral-700">
+                  <li className="flex items-start">
+                    <span className="mr-2 text-primary-600">•</span>
+                    Graduate of Culinary Institute of America
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2 text-primary-600">•</span>
+                    Former Executive Pastry Chef at Jungsik Seoul
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2 text-primary-600">•</span>
+                    Helped establish 2-Michelin starred Jungsik New York
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2 text-primary-600">•</span>
+                    Owner of La Tabatiere bakery in Closter, NJ
+                  </li>
+                </ul>
+              </div>
+            </div>
             
-            <Card padding="lg">
-              <h3 className="text-xl font-serif font-bold text-neutral-900 mb-3">
-                Timeless Hospitality
-              </h3>
-              <p className="text-neutral-600">
-                Our team is dedicated to providing warm, attentive service that makes 
-                every guest feel like a regular from their first visit.
-              </p>
-            </Card>
-            
-            <Card padding="lg">
-              <h3 className="text-xl font-serif font-bold text-neutral-900 mb-3">
-                Community Focus
-              </h3>
-              <p className="text-neutral-600">
-                We're proud to be a neighborhood gathering place, fostering connections 
-                and creating memories one evening at a time.
-              </p>
-            </Card>
-          </Grid>
+            {/* Large Feature Images */}
+            <div className="space-y-4">
+              <div className="relative h-80 rounded-lg overflow-hidden shadow-xl">
+                <Image
+                  src="/images/restaurant/food-2.jpg"
+                  alt="Signature croissant sandwich"
+                  fill
+                  className="object-cover hover:scale-105 transition-transform duration-300"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
+              <div className="relative h-80 rounded-lg overflow-hidden shadow-xl">
+                <Image
+                  src="/images/restaurant/interior-1.jpg"
+                  alt="Restaurant interior with brick archway"
+                  fill
+                  className="object-cover hover:scale-105 transition-transform duration-300"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
+            </div>
+          </div>
         </Container>
       </Section>
 
-      <Section spacing="lg">
+      {/* Visit CTA */}
+      <Section spacing="lg" className="bg-white">
         <Container>
-          <div className="text-center">
-            <h2 className="text-3xl font-serif font-bold text-neutral-900 mb-4">
-              Visit Us
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-neutral-900 mb-6">
+              Experience Pavé
             </h2>
-            <p className="text-lg text-neutral-600 mb-8 max-w-2xl mx-auto">
-              Experience the charm of Pavé46 for yourself. We look forward to welcoming you.
+            <p className="text-lg text-neutral-600 mb-8">
+              Visit us in Midtown Manhattan for freshly baked bread, 
+              artisanal sandwiches, and exceptional pastries made with love and expertise.
             </p>
-            <a
-              href="/contact"
-              className="inline-block bg-primary-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-primary-700 transition-colors"
-            >
-              Get Directions
-            </a>
+            <div className="flex gap-4 justify-center flex-wrap">
+              <a
+                href="/menu"
+                className="inline-block bg-primary-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-primary-700 transition-colors"
+              >
+                View Our Menu
+              </a>
+              <a
+                href="/contact"
+                className="inline-block bg-neutral-200 text-neutral-900 px-8 py-3 rounded-lg font-medium hover:bg-neutral-300 transition-colors"
+              >
+                Visit Us Today
+              </a>
+            </div>
           </div>
         </Container>
       </Section>

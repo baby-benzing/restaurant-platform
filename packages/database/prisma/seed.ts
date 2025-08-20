@@ -18,110 +18,188 @@ async function main() {
 
   console.log('✅ Cleared existing data');
 
-  // Create Pavé46 restaurant
-  const pave46 = await prisma.restaurant.create({
+  // Create Pavé NYC restaurant
+  const pave = await prisma.restaurant.create({
     data: {
-      slug: 'pave46',
-      name: 'Pavé46',
-      description: 'An intimate neighborhood cocktail bar in Hudson Square, blending Parisian charm with impeccable service. Discover curated wines, craft cocktails, and refined small plates in a setting that captures the essence of both New York and Paris.',
-      logo: '/images/pave46-logo.png',
+      slug: 'pave',
+      name: 'Pavé',
+      description: 'A European-style café and bakery in Midtown Manhattan. Founded by Chef Jonghun Won, we believe there\'s nothing better than freshly baked bread, and that there\'s nothing better than a sandwich built on that bread. Fresh is best!',
+      logo: '/images/pave-logo.png',
     },
   });
 
-  console.log('✅ Created Pavé46 restaurant');
+  console.log('✅ Created Pavé restaurant');
 
   // Create menus
   const mainMenu = await prisma.menu.create({
     data: {
-      restaurantId: pave46.id,
+      restaurantId: pave.id,
       name: 'Main Menu',
-      description: 'Our curated selection of cocktails, wines, and small plates',
+      description: 'Fresh breads, sandwiches, pastries and more',
       sortOrder: 1,
       isActive: true,
       sections: {
         create: [
           {
-            name: 'Signature Cocktails',
-            description: 'Crafted with care and creativity',
+            name: 'Breads',
+            description: 'Freshly baked artisanal breads',
             sortOrder: 1,
             items: {
               create: [
                 {
-                  name: 'Le Boulevardier',
-                  description: 'Rye whiskey, Campari, sweet vermouth',
-                  price: 16,
+                  name: 'Baguette',
+                  description: 'Traditional French baguette',
+                  price: 5,
                   sortOrder: 1,
                 },
                 {
-                  name: 'French 75',
-                  description: 'Gin, lemon juice, simple syrup, champagne',
-                  price: 15,
+                  name: 'Petit Baguette',
+                  description: 'Half-size French baguette',
+                  price: 2.50,
                   sortOrder: 2,
                 },
                 {
-                  name: 'Sazerac',
-                  description: 'Cognac, absinthe, sugar cube, Peychaud\'s bitters',
-                  price: 17,
+                  name: 'Multigrain',
+                  description: 'Hearty multigrain loaf (Full size only)',
+                  price: 5,
                   sortOrder: 3,
+                },
+                {
+                  name: 'Olive Ciabatta',
+                  description: 'Italian ciabatta with olives',
+                  price: 2.50,
+                  sortOrder: 4,
+                },
+                {
+                  name: 'Everything Baguette',
+                  description: 'Baguette with everything seasoning',
+                  price: 3.50,
+                  sortOrder: 5,
                 },
               ],
             },
           },
           {
-            name: 'Wine Selection',
-            description: 'Carefully selected wines from France and beyond',
+            name: 'Sandwiches',
+            description: 'Made with our freshly baked breads',
             sortOrder: 2,
             items: {
               create: [
                 {
-                  name: 'Sancerre, Domaine Vacheron',
-                  description: '2022, Loire Valley, France',
+                  name: 'Smoked Salmon',
+                  description: 'Everything baguette, cream cheese, red onion',
                   price: 14,
                   sortOrder: 1,
                 },
                 {
-                  name: 'Châteauneuf-du-Pape, Domaine du Vieux Télégraphe',
-                  description: '2019, Rhône Valley, France',
-                  price: 18,
+                  name: 'Brie & Apple',
+                  description: 'Petit baguette, arugula, honey-dijon',
+                  price: 11,
                   sortOrder: 2,
                 },
                 {
-                  name: 'Champagne, Pierre Gimonnet & Fils',
-                  description: 'Brut, Cuis 1er Cru, NV',
-                  price: 16,
+                  name: 'Jambon Beurre',
+                  description: 'French ham, mustard, butter',
+                  price: 8.50,
                   sortOrder: 3,
+                },
+                {
+                  name: 'Turkey Salad',
+                  description: 'Croissant, grapes, pistachios',
+                  price: 13.50,
+                  sortOrder: 4,
                 },
               ],
             },
           },
           {
-            name: 'Small Plates',
-            description: 'Perfect accompaniments to your drinks',
+            name: 'Focaccia',
+            description: 'Italian flatbread with toppings',
             sortOrder: 3,
             items: {
               create: [
                 {
-                  name: 'Cheese Board',
-                  description: 'Selection of three artisanal cheeses, honey, crackers',
-                  price: 24,
+                  name: 'Mushroom-Potato',
+                  description: 'Crème fraîche, Gruyere',
+                  price: 6.75,
                   sortOrder: 1,
                 },
                 {
-                  name: 'Charcuterie',
-                  description: 'Cured meats, cornichons, mustard, baguette',
-                  price: 22,
+                  name: 'Chorizo-Zucchini',
+                  description: 'Tomato sauce, mozzarella',
+                  price: 6,
+                  sortOrder: 2,
+                },
+              ],
+            },
+          },
+          {
+            name: 'Pastries & Viennoiserie',
+            description: 'Sweet treats and French pastries',
+            sortOrder: 4,
+            items: {
+              create: [
+                {
+                  name: 'Banana Bread',
+                  description: 'Moist banana bread slice',
+                  price: 4.50,
+                  sortOrder: 1,
+                },
+                {
+                  name: 'Financier',
+                  description: 'French almond cake',
+                  price: 4.25,
                   sortOrder: 2,
                 },
                 {
-                  name: 'Oysters',
-                  description: 'Half dozen, mignonette, lemon',
+                  name: 'Green Tea Scone',
+                  description: 'Delicate matcha-flavored scone',
+                  price: 3,
+                  sortOrder: 3,
+                },
+                {
+                  name: 'Chocolate Chip Cookie',
+                  description: 'Classic chocolate chip cookie',
+                  price: 3.50,
+                  sortOrder: 4,
+                },
+                {
+                  name: 'Paris-Brest Choux',
+                  description: 'Choux pastry with praline cream',
+                  price: 6.50,
+                  sortOrder: 5,
+                },
+              ],
+            },
+          },
+          {
+            name: 'Afternoon Menu',
+            description: 'Available after 2pm',
+            sortOrder: 5,
+            items: {
+              create: [
+                {
+                  name: 'Truffle Gougères',
+                  description: 'Cheese puffs with truffle',
+                  price: 12,
+                  sortOrder: 1,
+                },
+                {
+                  name: 'Foie Gras Terrine',
+                  description: 'Duck liver terrine with toast points',
+                  price: 25,
+                  sortOrder: 2,
+                },
+                {
+                  name: 'Cheese Plate',
+                  description: 'Selection of artisanal cheeses',
                   price: 18,
                   sortOrder: 3,
                 },
                 {
-                  name: 'Steak Frites',
-                  description: 'Hanger steak, herb butter, pommes frites',
-                  price: 28,
+                  name: 'Charcuterie Platter',
+                  description: 'Cured meats and accompaniments',
+                  price: 20,
                   sortOrder: 4,
                 },
               ],
@@ -136,20 +214,20 @@ async function main() {
 
   // Create operating hours
   const hours = [
-    { dayOfWeek: 0, openTime: '17:00', closeTime: '00:00', isClosed: false }, // Sunday
-    { dayOfWeek: 1, openTime: '17:00', closeTime: '00:00', isClosed: false }, // Monday
-    { dayOfWeek: 2, openTime: '17:00', closeTime: '00:00', isClosed: false }, // Tuesday
-    { dayOfWeek: 3, openTime: '17:00', closeTime: '01:00', isClosed: false }, // Wednesday
-    { dayOfWeek: 4, openTime: '17:00', closeTime: '01:00', isClosed: false }, // Thursday
-    { dayOfWeek: 5, openTime: '17:00', closeTime: '02:00', isClosed: false }, // Friday
-    { dayOfWeek: 6, openTime: '17:00', closeTime: '02:00', isClosed: false }, // Saturday
+    { dayOfWeek: 0, openTime: '09:00', closeTime: '15:00', isClosed: false }, // Sunday
+    { dayOfWeek: 1, openTime: '07:00', closeTime: '16:00', isClosed: false }, // Monday
+    { dayOfWeek: 2, openTime: '07:00', closeTime: '19:00', isClosed: false }, // Tuesday
+    { dayOfWeek: 3, openTime: '07:00', closeTime: '19:00', isClosed: false }, // Wednesday
+    { dayOfWeek: 4, openTime: '07:00', closeTime: '19:00', isClosed: false }, // Thursday
+    { dayOfWeek: 5, openTime: '07:00', closeTime: '16:00', isClosed: false }, // Friday
+    { dayOfWeek: 6, openTime: '00:00', closeTime: '00:00', isClosed: true },   // Saturday - CLOSED
   ];
 
   for (const hour of hours) {
     await prisma.operatingHours.create({
       data: {
         ...hour,
-        restaurantId: pave46.id,
+        restaurantId: pave.id,
       },
     });
   }
@@ -158,10 +236,10 @@ async function main() {
 
   // Create contacts
   const contacts = [
-    { type: 'phone', value: '(212) 555-0146', label: 'Reservations' },
-    { type: 'email', value: 'info@pave46.com', label: 'General Inquiries' },
-    { type: 'address', value: '181 Hudson Street, New York, NY 10013', label: 'Location' },
-    { type: 'social', value: '@pave46nyc', label: 'Instagram' },
+    { type: 'phone', value: '(646) 454-1387', label: 'Phone' },
+    { type: 'email', value: 'pavenyc@gmail.com', label: 'Email' },
+    { type: 'address', value: '20 West 46th Street, New York, NY 10036', label: 'Location' },
+    { type: 'social', value: '@pave_nyc', label: 'Instagram' },
   ];
 
   for (let i = 0; i < contacts.length; i++) {
@@ -169,7 +247,7 @@ async function main() {
       data: {
         ...contacts[i],
         sortOrder: i + 1,
-        restaurantId: pave46.id,
+        restaurantId: pave.id,
       },
     });
   }
@@ -178,10 +256,10 @@ async function main() {
 
   // Create images
   const images = [
-    { url: '/images/pave46-hero.jpg', alt: 'Pavé46 interior', category: 'hero' },
-    { url: '/images/pave46-bar.jpg', alt: 'Bar area', category: 'gallery' },
-    { url: '/images/pave46-cocktail.jpg', alt: 'Signature cocktail', category: 'gallery' },
-    { url: '/images/pave46-dining.jpg', alt: 'Dining area', category: 'gallery' },
+    { url: '/images/pave-hero.jpg', alt: 'Pavé bakery interior', category: 'hero' },
+    { url: '/images/pave-breads.jpg', alt: 'Fresh baked breads', category: 'gallery' },
+    { url: '/images/pave-pastries.jpg', alt: 'Pastry display', category: 'gallery' },
+    { url: '/images/pave-sandwich.jpg', alt: 'Signature sandwich', category: 'gallery' },
   ];
 
   for (let i = 0; i < images.length; i++) {
@@ -189,7 +267,7 @@ async function main() {
       data: {
         ...images[i],
         sortOrder: i + 1,
-        restaurantId: pave46.id,
+        restaurantId: pave.id,
       },
     });
   }
@@ -199,22 +277,22 @@ async function main() {
   // Create test users
   const users = [
     {
-      email: 'admin@pave46.com',
+      email: 'admin@pave.com',
       name: 'Admin User',
-      role: 'admin',
-      passwordHash: await hash('admin123', 10),
+      role: 'ADMIN',
+      passwordHash: await hash('AdminPassword123!', 10),
     },
     {
-      email: 'editor@pave46.com',
+      email: 'editor@pave.com',
       name: 'Editor User',
-      role: 'editor',
-      passwordHash: await hash('editor123', 10),
+      role: 'EDITOR',
+      passwordHash: await hash('EditorPassword123!', 10),
     },
     {
-      email: 'viewer@pave46.com',
+      email: 'viewer@pave.com',
       name: 'Viewer User',
-      role: 'viewer',
-      passwordHash: await hash('viewer123', 10),
+      role: 'VIEWER',
+      passwordHash: await hash('ViewerPassword123!', 10),
     },
   ];
 

@@ -1,5 +1,7 @@
-import { prisma, type Restaurant } from '@restaurant-platform/database';
+import type { Restaurant } from '@restaurant-platform/database';
 
+// This function should only be called from server-side code
+// For client-side, use the /api/restaurant endpoint
 export interface RestaurantWithRelations extends Restaurant {
   menus: Array<{
     id: string;
@@ -120,7 +122,16 @@ const mockRestaurantData: RestaurantWithRelations = {
 export async function getRestaurantData(): Promise<RestaurantWithRelations> {
   const slug = process.env.RESTAURANT_SLUG || 'pave46';
   
+  // Check if we're in a browser environment
+  if (typeof window !== 'undefined') {
+    console.warn('getRestaurantData should not be called from client-side code');
+    return mockRestaurantData;
+  }
+  
   try {
+    // Only import and use Prisma on the server side
+    const { prisma } = await import('@restaurant-platform/database');
+    
     // Try to fetch from database
     const restaurant = await prisma.restaurant.findUnique({
       where: { slug },

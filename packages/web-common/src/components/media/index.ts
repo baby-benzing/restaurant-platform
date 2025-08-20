@@ -1,0 +1,1 @@
+export { PhotoSlideshow, type PhotoSlideshowProps, type Photo } from './PhotoSlideshow';

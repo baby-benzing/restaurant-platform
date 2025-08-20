@@ -1,0 +1,151 @@
+// Wine List Management Models
+
+model Wine {
+  id              String    @id @default(cuid())
+  restaurantId    String
+  name            String
+  producer        String?
+  vintage         Int?
+  region          String?
+  country         String?
+  grapeVarieties  String[]
+  type            WineType
+  price           Decimal?  @db.Decimal(10, 2)
+  glassPrice      Decimal?  @db.Decimal(10, 2)
+  bottlePrice     Decimal?  @db.Decimal(10, 2)
+  tastingNotes    String?   @db.Text
+  foodPairings    String[]
+  inventoryStatus WineInventoryStatus @default(IN_STOCK)
+  displayOrder    Int       @default(999)
+  isActive        Boolean   @default(true)
+  featured        Boolean   @default(false)
+  imageUrl        String?
+  
+  // Metadata
+  importedFrom    String?   // Track source file
+  importedAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  restaurant      Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  updates         WineUpdate[]
+  analytics       WineAnalytics[]
+  
+  @@index([restaurantId, type, isActive])
+  @@index([restaurantId, featured])
+  @@map("wines")
+}
+
+model WineCategory {
+  id            String    @id @default(cuid())
+  restaurantId  String
+  name          String
+  description   String?
+  displayOrder  Int       @default(999)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  
+  @@unique([restaurantId, name])
+  @@map("wine_categories")
+}
+
+model WineUpdate {
+  id            String    @id @default(cuid())
+  wineId        String
+  userId        String?
+  updateType    WineUpdateType
+  oldData       Json?
+  newData       Json?
+  notes         String?
+  createdAt     DateTime  @default(now())
+  
+  wine          Wine      @relation(fields: [wineId], references: [id], onDelete: Cascade)
+  user          User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  @@index([wineId])
+  @@map("wine_updates")
+}
+
+model WineAnalytics {
+  id            String    @id @default(cuid())
+  wineId        String
+  eventType     WineEventType
+  sessionId     String?
+  userId        String?
+  metadata      Json?
+  createdAt     DateTime  @default(now())
+  
+  wine          Wine      @relation(fields: [wineId], references: [id], onDelete: Cascade)
+  
+  @@index([wineId, eventType])
+  @@index([createdAt])
+  @@map("wine_analytics")
+}
+
+model WineImport {
+  id            String    @id @default(cuid())
+  restaurantId  String
+  fileName      String
+  fileSize      Int?
+  status        ImportStatus
+  totalRows     Int?
+  successCount  Int?
+  errorCount    Int?
+  errors        Json?
+  startedAt     DateTime  @default(now())
+  completedAt   DateTime?
+  userId        String?
+  
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  user          User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  @@index([restaurantId, status])
+  @@map("wine_imports")
+}
+
+enum WineType {
+  RED
+  WHITE
+  ROSE
+  SPARKLING
+  DESSERT
+  FORTIFIED
+  OTHER
+}
+
+enum WineInventoryStatus {
+  IN_STOCK
+  LOW_STOCK
+  OUT_OF_STOCK
+  COMING_SOON
+  SEASONAL
+}
+
+enum WineUpdateType {
+  CREATE
+  UPDATE
+  DELETE
+  PRICE_CHANGE
+  INVENTORY_CHANGE
+  IMPORT
+}
+
+enum WineEventType {
+  VIEW
+  SEARCH
+  FILTER
+  CLICK
+  SHARE
+}
+
+enum ImportStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
