@@ -58,7 +58,7 @@ export default function AboutSection() {
           <div className="relative h-64 mb-6 rounded-lg overflow-hidden">
             <OptimizedImage
               src="/images/restaurant/dining-1.jpg"
-              alt="Pavé46 Dining Experience"
+              alt="Pavé Dining Experience"
               fill
               objectFit="cover"
               sizes="(max-width: 768px) 100vw, 50vw"

@@ -25,6 +25,8 @@ model Restaurant {
   wineImports WineImport[]
   cateringInquiries CateringInquiry[]
   notificationSettings NotificationSettings?
+  adminUsers AdminUserRestaurant[]
+  auditLogs  AuditLog[]
 
   @@map("restaurants")
 }
@@ -410,4 +412,122 @@ model NotificationSettings {
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   
   @@map("notification_settings")
+}
+
+// ============= ADMIN & AUDIT MODELS =============
+
+model AdminUser {
+  id            String      @id @default(cuid())
+  email         String      @unique
+  googleId      String?     @unique
+  name          String?
+  avatar        String?
+  roleId        String
+  status        UserStatus  @default(ACTIVE)
+  invitedById   String?
+  lastLoginAt   DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  role          AdminRole   @relation(fields: [roleId], references: [id])
+  invitedBy     AdminUser?  @relation("InvitedUsers", fields: [invitedById], references: [id])
+  invitedUsers  AdminUser[] @relation("InvitedUsers")
+  sessions      Session[]
+  auditLogs     AuditLog[]
+  invitations   Invitation[]
+  restaurants   AdminUserRestaurant[]
+  wineUpdates   WineUpdate[]
+  wineImports   WineImport[]
+  
+  @@index([email])
+  @@index([status])
+  @@map("admin_users")
+}
+
+model AdminRole {
+  id            String      @id @default(cuid())
+  name          String      @unique
+  description   String?
+  permissions   String[]    // Array of permission strings
+  isSystem      Boolean     @default(false) // Cannot be deleted
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  users         AdminUser[]
+  invitations   Invitation[]
+  
+  @@map("admin_roles")
+}
+
+model AdminUserRestaurant {
+  id            String      @id @default(cuid())
+  userId        String
+  restaurantId  String
+  isPrimary     Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  
+  user          AdminUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurant    Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, restaurantId])
+  @@map("admin_user_restaurants")
+}
+
+model Invitation {
+  id            String      @id @default(cuid())
+  email         String
+  roleId        String
+  invitedById   String
+  token         String      @unique
+  expiresAt     DateTime
+  acceptedAt    DateTime?
+  status        InviteStatus @default(PENDING)
+  createdAt     DateTime    @default(now())
+  
+  role          AdminRole   @relation(fields: [roleId], references: [id])
+  invitedBy     AdminUser   @relation(fields: [invitedById], references: [id])
+  
+  @@index([email])
+  @@index([token])
+  @@index([status])
+  @@map("invitations")
+}
+
+model AuditLog {
+  id            String      @id @default(cuid())
+  restaurantId  String
+  userId        String
+  action        String      // AuditAction enum as string
+  entityType    String
+  entityId      String
+  oldValue      Json?       // Previous state
+  newValue      Json?       // New state
+  changes       Json?       // Calculated diff
+  metadata      Json?       // Additional context
+  ipAddress     String?
+  userAgent     String?
+  timestamp     DateTime    @default(now())
+  
+  restaurant    Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  user          AdminUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([restaurantId])
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([action])
+  @@index([timestamp])
+  @@map("audit_logs")
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum InviteStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
 }

@@ -250,7 +250,7 @@ importers:
         version: 29.4.1(@babel/core@7.28.3)(esbuild@0.25.9)(jest@29.7.0)(typescript@5.9.2)
       tsup:
         specifier: ^8.0.1
-        version: 8.5.0(postcss@8.5.6)(typescript@5.9.2)
+        version: 8.5.0(tsx@4.20.4)(typescript@5.9.2)
 
   packages/auth:
     dependencies:
@@ -357,13 +357,13 @@ importers:
         version: 2.6.0
     devDependencies:
       '@testing-library/jest-dom':
-        specifier: ^6.2.0
+        specifier: ^6.7.0
         version: 6.7.0
       '@testing-library/react':
-        specifier: ^14.1.2
+        specifier: ^14.3.1
         version: 14.3.1(@types/react@18.3.23)(react-dom@18.3.1)(react@18.3.1)
       '@types/jest':
-        specifier: ^29.5.11
+        specifier: ^29.5.14
         version: 29.5.14
       '@types/react':
         specifier: ^18.3.23
@@ -374,6 +374,9 @@ importers:
       autoprefixer:
         specifier: ^10.4.17
         version: 10.4.21(postcss@8.5.6)
+      identity-obj-proxy:
+        specifier: ^3.0.0
+        version: 3.0.0
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.19.11)
@@ -5221,6 +5224,10 @@ packages:
       uglify-js: 3.19.3
     dev: true
 
+  /harmony-reflect@1.6.2:
+    resolution: {integrity: sha512-HIp/n38R9kQjDEziXyDTuW3vvoxxyxjxFzXLrBr18uB47GnSt+G9D29fqrpM5ZkspMcPICud3XsBJQ4Y2URg8g==}
+    dev: true
+
   /has-bigints@1.1.0:
     resolution: {integrity: sha512-R3pbpkcIqv2Pm3dUwgjclDRVmWpTJW2DcMzcIhEXEx1oh/CEMObMm3KLmRJOdvhM7o4uQBnwr8pzRK2sJWIqfg==}
     engines: {node: '>= 0.4'}
@@ -5311,6 +5318,13 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       safer-buffer: 2.1.2
+    dev: true
+
+  /identity-obj-proxy@3.0.0:
+    resolution: {integrity: sha512-00n6YnVHKrinT9t0d9+5yZC6UBNJANpYEQvL2LlX6Ab9lnmxzIRcEmTPuyGScvl1+jKuCICX1Z0Ab1pPKKdikA==}
+    engines: {node: '>=4'}
+    dependencies:
+      harmony-reflect: 1.6.2
     dev: true
 
   /ignore@5.3.2:

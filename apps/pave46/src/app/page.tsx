@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Home, BookOpen, ShoppingBag, Info, ChefHat } from 'lucide-react';
+import { Home, BookOpen, ShoppingBag, Info, ChefHat, Newspaper } from 'lucide-react';
 import { LiquidGlassNav, NavItem } from '@restaurant-platform/web-common';
 import { useRestaurantData } from '@/hooks/useRestaurantData';
 import ImageSlideshow from '@/components/ImageSlideshow';
@@ -9,6 +9,7 @@ import MenuSection from '@/components/MenuSection';
 import OrderSection from '@/components/OrderSection';
 import InfoSection from '@/components/InfoSection';
 import CateringSection from '@/components/CateringSection';
+import MediaSection from '@/components/MediaSection';
 
 export default function HomePage() {
   const [activeSection, setActiveSection] = useState('home');
@@ -19,6 +20,7 @@ export default function HomePage() {
     { id: 'menu', icon: <BookOpen size={24} />, label: 'Menu' },
     { id: 'order', icon: <ShoppingBag size={24} />, label: 'Order' },
     { id: 'catering', icon: <ChefHat size={24} />, label: 'Catering' },
+    { id: 'media', icon: <Newspaper size={24} />, label: 'Media' },
     { id: 'info', icon: <Info size={24} />, label: 'Info' },
   ];
 
@@ -36,6 +38,7 @@ export default function HomePage() {
         {activeSection === 'menu' && <MenuSection menu={restaurant?.menus?.[0]} />}
         {activeSection === 'order' && <OrderSection />}
         {activeSection === 'catering' && <CateringSection />}
+        {activeSection === 'media' && <MediaSection />}
         {activeSection === 'info' && <InfoSection restaurant={restaurant} />}
       </div>
 

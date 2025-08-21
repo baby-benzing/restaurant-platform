@@ -43,9 +43,9 @@ export interface RestaurantWithRelations extends Restaurant {
 const mockRestaurantData: RestaurantWithRelations = {
   id: '1',
   slug: 'pave46',
-  name: 'Pavé46',
+  name: 'Pavé',
   description: 'An intimate neighborhood cocktail bar in Hudson Square',
-  logo: '/images/pave46-logo.png',
+  logo: '/images/pave-logo.png',
   createdAt: new Date(),
   updatedAt: new Date(),
   menus: [
@@ -115,7 +115,7 @@ const mockRestaurantData: RestaurantWithRelations = {
     { type: 'address', label: 'Location', value: '181 Hudson Street, New York, NY' },
   ],
   images: [
-    { url: '/images/hero.jpg', alt: 'Pavé46 interior', category: 'hero' },
+    { url: '/images/hero.jpg', alt: 'Pavé interior', category: 'hero' },
   ],
 };
 

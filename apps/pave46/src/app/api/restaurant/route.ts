@@ -11,7 +11,7 @@ export async function GET() {
     return NextResponse.json({
       id: '1',
       slug: 'pave46',
-      name: 'Pavé46',
+      name: 'Pavé',
       description: 'Fresh French bakery and café in Midtown Manhattan',
       logo: '/images/pave-hero.svg',
       createdAt: new Date().toISOString(),

@@ -12,7 +12,7 @@ export default function ImageSlideshow() {
   const [currentIndex, setCurrentIndex] = useState(0);
   
   const images: SlideshowImage[] = [
-    { src: '/images/restaurant/hero-main.jpg', alt: 'Pavé46 Restaurant' },
+    { src: '/images/restaurant/hero-main.jpg', alt: 'Pavé Restaurant' },
     { src: '/images/restaurant/interior-1.jpg', alt: 'Restaurant Interior' },
     { src: '/images/restaurant/dining-1.jpg', alt: 'Dining Area' },
     { src: '/images/restaurant/bar-1.jpg', alt: 'Bar Area' },

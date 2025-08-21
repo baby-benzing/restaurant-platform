@@ -16,10 +16,10 @@ export default function InfoSection({ restaurant }: InfoSectionProps) {
 
         {/* About Us */}
         <div className="mb-16">
-          <h3 className="text-2xl font-light mb-6 text-gray-900">About Pavé46</h3>
+          <h3 className="text-2xl font-light mb-6 text-gray-900">About Pavé</h3>
           <div className="prose prose-lg max-w-none text-gray-600">
             <p>
-              Welcome to Pavé46, your neighborhood French bakery and café in the heart of Midtown Manhattan. 
+              Welcome to Pavé, your neighborhood French bakery and café in the heart of Midtown Manhattan. 
               We bring the authentic taste of Paris to New York with our freshly baked breads, artisanal 
               sandwiches, and delicate pastries.
             </p>
@@ -27,7 +27,7 @@ export default function InfoSection({ restaurant }: InfoSectionProps) {
               Every morning, our skilled bakers start before dawn to prepare fresh croissants, baguettes, 
               and an array of French pastries using traditional techniques and the finest ingredients. 
               Whether you&apos;re looking for a quick breakfast, a leisurely lunch, or treats to take home, 
-              Pavé46 offers a genuine taste of French culinary tradition.
+              Pavé offers a genuine taste of French culinary tradition.
             </p>
           </div>
         </div>
@@ -80,7 +80,7 @@ export default function InfoSection({ restaurant }: InfoSectionProps) {
           <h3 className="text-xl font-semibold mb-6 text-gray-900">Visit Us</h3>
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <p className="text-gray-700 font-medium mb-2">Pavé46</p>
+              <p className="text-gray-700 font-medium mb-2">Pavé</p>
               <p className="text-gray-600">
                 511 10th Avenue<br />
                 New York, NY 10018<br />

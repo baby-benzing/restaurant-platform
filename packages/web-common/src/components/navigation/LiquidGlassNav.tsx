@@ -54,9 +54,9 @@ export const LiquidGlassNav: React.FC<LiquidGlassNavProps> = ({
 
   return (
     <div className={`${positionClasses} z-50 px-4 ${className}`}>
-      <div className="max-w-sm mx-auto">
+      <div className="max-w-md mx-auto">
         <nav 
-          className={`flex justify-around items-center ${styles.nav} rounded-[28px] p-2 border shadow-xl`}
+          className={`flex justify-around items-center ${styles.nav} rounded-[28px] p-1.5 border shadow-xl`}
           role="navigation"
           aria-label="Main navigation"
         >
@@ -66,7 +66,7 @@ export const LiquidGlassNav: React.FC<LiquidGlassNavProps> = ({
               onClick={() => onItemClick(item.id)}
               className={`
                 relative flex flex-col items-center justify-center
-                w-20 h-20 rounded-[22px] transition-all duration-300
+                w-16 h-16 md:w-20 md:h-20 rounded-[20px] transition-all duration-300
                 ${activeId === item.id 
                   ? `${styles.activeButton} shadow-lg scale-105` 
                   : styles.inactiveButton
@@ -78,7 +78,7 @@ export const LiquidGlassNav: React.FC<LiquidGlassNavProps> = ({
             >
               <div 
                 className={`
-                  p-3 rounded-[18px] transition-all duration-300
+                  p-2 md:p-3 rounded-[16px] transition-all duration-300
                   ${activeId === item.id 
                     ? `${styles.activeIcon} shadow-inner` 
                     : styles.inactiveIcon
