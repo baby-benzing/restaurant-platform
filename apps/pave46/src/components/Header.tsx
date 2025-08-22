@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Container } from '@restaurant-platform/web-common';
+import Logo from './Logo';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,10 +18,10 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm">
       <Container>
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-24">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <span className="text-2xl font-serif font-bold text-neutral-900">Pavé</span>
+          <Link href="/" className="flex items-center py-2">
+            <Logo width={180} height={90} />
           </Link>
 
           {/* Desktop Navigation */}

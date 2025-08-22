@@ -37,7 +37,17 @@ export default function InfoSection({ restaurant }: InfoSectionProps) {
           <div className="bg-gray-50 rounded-2xl p-8">
             <h3 className="text-xl font-semibold mb-6 text-gray-900">Hours</h3>
             {restaurant?.hours ? (
-              <HoursDisplay hours={restaurant.hours} />
+              <HoursDisplay 
+                hours={restaurant.hours.map((h: any) => ({
+                  dayOfWeek: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][h.dayOfWeek],
+                  openTime: h.openTime,
+                  closeTime: h.closeTime,
+                  isClosed: h.isClosed
+                }))} 
+                variant="default"
+                showCurrentStatus
+                highlightToday
+              />
             ) : (
               <p className="text-gray-600">Loading hours...</p>
             )}

@@ -9,6 +9,7 @@ export default function AdminSidebar() {
   const menuItems = [
     { href: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
     { href: '/admin/menu', label: 'Menu Management', icon: '🍽️' },
+    { href: '/admin/media', label: 'Press & Articles', icon: '📰' },
     { href: '/admin/hours', label: 'Operating Hours', icon: '🕐' },
     { href: '/admin/contact', label: 'Contact Info', icon: '📞' },
   ];

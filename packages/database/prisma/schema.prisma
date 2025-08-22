@@ -16,17 +16,18 @@ model Restaurant {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  menus     Menu[]
-  hours     OperatingHours[]
-  contacts  Contact[]
-  images    Image[]
-  wines     Wine[]
-  wineCategories WineCategory[]
-  wineImports WineImport[]
-  cateringInquiries CateringInquiry[]
+  menus                Menu[]
+  hours                OperatingHours[]
+  contacts             Contact[]
+  images               Image[]
+  wines                Wine[]
+  wineCategories       WineCategory[]
+  wineImports          WineImport[]
+  cateringInquiries    CateringInquiry[]
   notificationSettings NotificationSettings?
-  adminUsers AdminUserRestaurant[]
-  auditLogs  AuditLog[]
+  adminUsers           AdminUserRestaurant[]
+  auditLogs            AuditLog[]
+  mediaArticles        MediaArticle[]
 
   @@map("restaurants")
 }
@@ -41,7 +42,7 @@ model Menu {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurant Restaurant    @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   sections   MenuSection[]
 
   @@map("menus")
@@ -81,9 +82,9 @@ model MenuItem {
 model OperatingHours {
   id           String   @id @default(cuid())
   restaurantId String
-  dayOfWeek    Int      // 0 = Sunday, 6 = Saturday
-  openTime     String   // Format: "HH:MM"
-  closeTime    String   // Format: "HH:MM"
+  dayOfWeek    Int // 0 = Sunday, 6 = Saturday
+  openTime     String // Format: "HH:MM"
+  closeTime    String // Format: "HH:MM"
   isClosed     Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -97,7 +98,7 @@ model OperatingHours {
 model Contact {
   id           String   @id @default(cuid())
   restaurantId String
-  type         String   // phone, email, address, social
+  type         String // phone, email, address, social
   label        String?
   value        String
   sortOrder    Int      @default(0)
@@ -114,7 +115,7 @@ model Image {
   restaurantId String
   url          String
   alt          String?
-  category     String?  // hero, gallery, menu, etc.
+  category     String? // hero, gallery, menu, etc.
   sortOrder    Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -122,6 +123,29 @@ model Image {
   restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
 
   @@map("images")
+}
+
+model MediaArticle {
+  id           String   @id @default(cuid())
+  restaurantId String
+  title        String
+  description  String   @db.Text
+  coverImage   String? // URL to cover image
+  publishDate  DateTime @default(now())
+  source       String? // e.g., "NY Times", "Eater NY"
+  author       String?
+  link         String? // External link to original article
+  isPremium    Boolean  @default(false)
+  isPublished  Boolean  @default(true)
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@index([restaurantId, isPublished])
+  @@index([sortOrder])
+  @@map("media_articles")
 }
 
 model User {
@@ -138,8 +162,7 @@ model User {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
-  sessions  Session[]
-  auditLogs AuditLog[]
+  sessions    Session[]
   wineUpdates WineUpdate[]
   wineImports WineImport[]
 
@@ -162,32 +185,19 @@ model Session {
   ipAddress    String?
   createdAt    DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  AdminUser   AdminUser? @relation(fields: [adminUserId], references: [id])
+  adminUserId String?
 
   @@index([userId])
   @@index([token])
   @@map("sessions")
 }
 
-model AuditLog {
-  id        String   @id @default(cuid())
-  userId    String?
-  action    String
-  resource  String?
-  details   Json?
-  ipAddress String?
-  userAgent String?
-  createdAt DateTime @default(now())
-
-  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  @@index([userId])
-  @@index([action])
-  @@map("audit_logs")
-}// Wine List Management Models
+// Wine List Management Models
 
 model Wine {
-  id              String    @id @default(cuid())
+  id              String              @id @default(cuid())
   restaurantId    String
   name            String
   producer        String?
@@ -196,99 +206,103 @@ model Wine {
   country         String?
   grapeVarieties  String[]
   type            WineType
-  price           Decimal?  @db.Decimal(10, 2)
-  glassPrice      Decimal?  @db.Decimal(10, 2)
-  bottlePrice     Decimal?  @db.Decimal(10, 2)
-  tastingNotes    String?   @db.Text
+  price           Decimal?            @db.Decimal(10, 2)
+  glassPrice      Decimal?            @db.Decimal(10, 2)
+  bottlePrice     Decimal?            @db.Decimal(10, 2)
+  tastingNotes    String?             @db.Text
   foodPairings    String[]
   inventoryStatus WineInventoryStatus @default(IN_STOCK)
-  displayOrder    Int       @default(999)
-  isActive        Boolean   @default(true)
-  featured        Boolean   @default(false)
+  displayOrder    Int                 @default(999)
+  isActive        Boolean             @default(true)
+  featured        Boolean             @default(false)
   imageUrl        String?
-  
+
   // Metadata
-  importedFrom    String?   // Track source file
-  importedAt      DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  
+  importedFrom String? // Track source file
+  importedAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
   // Relations
-  restaurant      Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  updates         WineUpdate[]
-  analytics       WineAnalytics[]
-  
+  restaurant Restaurant      @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  updates    WineUpdate[]
+  analytics  WineAnalytics[]
+
   @@index([restaurantId, type, isActive])
   @@index([restaurantId, featured])
   @@map("wines")
 }
 
 model WineCategory {
-  id            String    @id @default(cuid())
-  restaurantId  String
-  name          String
-  description   String?
-  displayOrder  Int       @default(999)
-  isActive      Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  
-  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  
+  id           String   @id @default(cuid())
+  restaurantId String
+  name         String
+  description  String?
+  displayOrder Int      @default(999)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
   @@unique([restaurantId, name])
   @@map("wine_categories")
 }
 
 model WineUpdate {
-  id            String    @id @default(cuid())
-  wineId        String
-  userId        String?
-  updateType    WineUpdateType
-  oldData       Json?
-  newData       Json?
-  notes         String?
-  createdAt     DateTime  @default(now())
-  
-  wine          Wine      @relation(fields: [wineId], references: [id], onDelete: Cascade)
-  user          User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
-  
+  id         String         @id @default(cuid())
+  wineId     String
+  userId     String?
+  updateType WineUpdateType
+  oldData    Json?
+  newData    Json?
+  notes      String?
+  createdAt  DateTime       @default(now())
+
+  wine        Wine       @relation(fields: [wineId], references: [id], onDelete: Cascade)
+  user        User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  AdminUser   AdminUser? @relation(fields: [adminUserId], references: [id])
+  adminUserId String?
+
   @@index([wineId])
   @@map("wine_updates")
 }
 
 model WineAnalytics {
-  id            String    @id @default(cuid())
-  wineId        String
-  eventType     WineEventType
-  sessionId     String?
-  userId        String?
-  metadata      Json?
-  createdAt     DateTime  @default(now())
-  
-  wine          Wine      @relation(fields: [wineId], references: [id], onDelete: Cascade)
-  
+  id        String        @id @default(cuid())
+  wineId    String
+  eventType WineEventType
+  sessionId String?
+  userId    String?
+  metadata  Json?
+  createdAt DateTime      @default(now())
+
+  wine Wine @relation(fields: [wineId], references: [id], onDelete: Cascade)
+
   @@index([wineId, eventType])
   @@index([createdAt])
   @@map("wine_analytics")
 }
 
 model WineImport {
-  id            String    @id @default(cuid())
-  restaurantId  String
-  fileName      String
-  fileSize      Int?
-  status        ImportStatus
-  totalRows     Int?
-  successCount  Int?
-  errorCount    Int?
-  errors        Json?
-  startedAt     DateTime  @default(now())
-  completedAt   DateTime?
-  userId        String?
-  
-  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  user          User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
-  
+  id           String       @id @default(cuid())
+  restaurantId String
+  fileName     String
+  fileSize     Int?
+  status       ImportStatus
+  totalRows    Int?
+  successCount Int?
+  errorCount   Int?
+  errors       Json?
+  startedAt    DateTime     @default(now())
+  completedAt  DateTime?
+  userId       String?
+
+  restaurant  Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  user        User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  AdminUser   AdminUser? @relation(fields: [adminUserId], references: [id])
+  adminUserId String?
+
   @@index([restaurantId, status])
   @@map("wine_imports")
 }
@@ -337,42 +351,42 @@ enum ImportStatus {
 }
 
 model CateringInquiry {
-  id           String   @id @default(cuid())
+  id           String @id @default(cuid())
   restaurantId String
-  
+
   // Contact Information
-  name         String
-  email        String
-  phone        String
-  company      String?
-  
+  name    String
+  email   String
+  phone   String
+  company String?
+
   // Event Details
-  eventDate    DateTime
-  eventTime    String   // Morning/Afternoon/Evening
-  eventType    String?  // Corporate/Wedding/Private Party/etc
-  guestCount   Int
-  
+  eventDate  DateTime
+  eventTime  String // Morning/Afternoon/Evening
+  eventType  String? // Corporate/Wedding/Private Party/etc
+  guestCount Int
+
   // Location
   venue        String?
   address      String
-  deliveryType String   // Pickup/Delivery
-  
+  deliveryType String // Pickup/Delivery
+
   // Requirements
-  message      String   @db.Text
-  budget       String?  // Budget range
-  
+  message String  @db.Text
+  budget  String? // Budget range
+
   // Status
-  status       CateringStatus @default(NEW)
-  notes        String?  @db.Text // Internal notes
-  
+  status CateringStatus @default(NEW)
+  notes  String?        @db.Text // Internal notes
+
   // Timestamps
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  respondedAt  DateTime?
-  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  respondedAt DateTime?
+
   // Relations
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
   @@index([restaurantId, status])
   @@index([createdAt])
   @@map("catering_inquiries")
@@ -388,105 +402,105 @@ enum CateringStatus {
 }
 
 model NotificationSettings {
-  id           String   @id @default(cuid())
-  restaurantId String   @unique
-  
+  id           String @id @default(cuid())
+  restaurantId String @unique
+
   // Email Notifications
-  emailEnabled Boolean  @default(true)
+  emailEnabled   Boolean  @default(true)
   emailAddresses String[] // Array of email addresses to notify
-  
+
   // SMS Notifications
   smsEnabled   Boolean  @default(false)
   phoneNumbers String[] // Array of phone numbers to notify
-  
+
   // Notification Types
   notifyCatering Boolean @default(true)
   notifyContact  Boolean @default(true)
   notifyOrders   Boolean @default(false)
-  
+
   // Timestamps
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Relations
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
   @@map("notification_settings")
 }
 
 // ============= ADMIN & AUDIT MODELS =============
 
 model AdminUser {
-  id            String      @id @default(cuid())
-  email         String      @unique
-  googleId      String?     @unique
-  name          String?
-  avatar        String?
-  roleId        String
-  status        UserStatus  @default(ACTIVE)
-  invitedById   String?
-  lastLoginAt   DateTime?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  
-  role          AdminRole   @relation(fields: [roleId], references: [id])
-  invitedBy     AdminUser?  @relation("InvitedUsers", fields: [invitedById], references: [id])
-  invitedUsers  AdminUser[] @relation("InvitedUsers")
-  sessions      Session[]
-  auditLogs     AuditLog[]
-  invitations   Invitation[]
-  restaurants   AdminUserRestaurant[]
-  wineUpdates   WineUpdate[]
-  wineImports   WineImport[]
-  
+  id          String     @id @default(cuid())
+  email       String     @unique
+  googleId    String?    @unique
+  name        String?
+  avatar      String?
+  roleId      String
+  status      UserStatus @default(ACTIVE)
+  invitedById String?
+  lastLoginAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  role         AdminRole             @relation(fields: [roleId], references: [id])
+  invitedBy    AdminUser?            @relation("InvitedUsers", fields: [invitedById], references: [id])
+  invitedUsers AdminUser[]           @relation("InvitedUsers")
+  sessions     Session[]
+  auditLogs    AuditLog[]
+  invitations  Invitation[]
+  restaurants  AdminUserRestaurant[]
+  wineUpdates  WineUpdate[]
+  wineImports  WineImport[]
+
   @@index([email])
   @@index([status])
   @@map("admin_users")
 }
 
 model AdminRole {
-  id            String      @id @default(cuid())
-  name          String      @unique
-  description   String?
-  permissions   String[]    // Array of permission strings
-  isSystem      Boolean     @default(false) // Cannot be deleted
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  
-  users         AdminUser[]
-  invitations   Invitation[]
-  
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  permissions String[] // Array of permission strings
+  isSystem    Boolean  @default(false) // Cannot be deleted
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users       AdminUser[]
+  invitations Invitation[]
+
   @@map("admin_roles")
 }
 
 model AdminUserRestaurant {
-  id            String      @id @default(cuid())
-  userId        String
-  restaurantId  String
-  isPrimary     Boolean     @default(false)
-  createdAt     DateTime    @default(now())
-  
-  user          AdminUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  restaurant    Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  
+  id           String   @id @default(cuid())
+  userId       String
+  restaurantId String
+  isPrimary    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  user       AdminUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
   @@unique([userId, restaurantId])
   @@map("admin_user_restaurants")
 }
 
 model Invitation {
-  id            String      @id @default(cuid())
-  email         String
-  roleId        String
-  invitedById   String
-  token         String      @unique
-  expiresAt     DateTime
-  acceptedAt    DateTime?
-  status        InviteStatus @default(PENDING)
-  createdAt     DateTime    @default(now())
-  
-  role          AdminRole   @relation(fields: [roleId], references: [id])
-  invitedBy     AdminUser   @relation(fields: [invitedById], references: [id])
-  
+  id          String       @id @default(cuid())
+  email       String
+  roleId      String
+  invitedById String
+  token       String       @unique
+  expiresAt   DateTime
+  acceptedAt  DateTime?
+  status      InviteStatus @default(PENDING)
+  createdAt   DateTime     @default(now())
+
+  role      AdminRole @relation(fields: [roleId], references: [id])
+  invitedBy AdminUser @relation(fields: [invitedById], references: [id])
+
   @@index([email])
   @@index([token])
   @@index([status])
@@ -494,23 +508,23 @@ model Invitation {
 }
 
 model AuditLog {
-  id            String      @id @default(cuid())
-  restaurantId  String
-  userId        String
-  action        String      // AuditAction enum as string
-  entityType    String
-  entityId      String
-  oldValue      Json?       // Previous state
-  newValue      Json?       // New state
-  changes       Json?       // Calculated diff
-  metadata      Json?       // Additional context
-  ipAddress     String?
-  userAgent     String?
-  timestamp     DateTime    @default(now())
-  
-  restaurant    Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  user          AdminUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  id           String   @id @default(cuid())
+  restaurantId String
+  userId       String
+  action       String // AuditAction enum as string
+  entityType   String
+  entityId     String
+  oldValue     Json? // Previous state
+  newValue     Json? // New state
+  changes      Json? // Calculated diff
+  metadata     Json? // Additional context
+  ipAddress    String?
+  userAgent    String?
+  timestamp    DateTime @default(now())
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  user       AdminUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([restaurantId])
   @@index([userId])
   @@index([entityType, entityId])

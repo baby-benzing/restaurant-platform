@@ -1,88 +1,44 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { X, ZoomIn } from 'lucide-react';
 
 interface MediaItem {
-  id: number;
-  src: string;
-  alt: string;
+  id: string;
   title: string;
   description: string;
-  premium?: boolean;
+  coverImage?: string;
+  publishDate: Date | string;
+  source?: string;
+  author?: string;
+  link?: string;
+  isPremium: boolean;
 }
 
 export default function MediaSection() {
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Media items with press articles and reviews
-  const mediaItems: MediaItem[] = [
-    {
-      id: 1,
-      src: '/images/media/nytimes-review.jpg',
-      alt: 'New York Times Review',
-      title: 'NY Times: Best New Bakery',
-      description: '"Pavé brings authentic Parisian pastries to Midtown Manhattan with a level of craftsmanship rarely seen outside of France. Their croissants rival those found on Boulevard Saint-Germain." - Pete Wells, NY Times Food Critic',
-      premium: false,
-    },
-    {
-      id: 2,
-      src: '/images/media/michelin-feature.jpg',
-      alt: 'Michelin Guide Feature',
-      title: 'Michelin Guide 2024',
-      description: 'Featured in the prestigious Michelin Guide as a Bib Gourmand recipient, recognizing exceptional food at moderate prices.',
-      premium: true,
-    },
-    {
-      id: 3,
-      src: '/images/media/eater-article.jpg',
-      alt: 'Eater NY Article',
-      title: 'Eater: Essential NYC Bakeries',
-      description: '"The butter lamination at Pavé is nothing short of perfection. This is where New Yorkers come for their morning croissant fix." - Eater NY Essential 38 List',
-      premium: false,
-    },
-    {
-      id: 4,
-      src: '/images/media/chef-interview.jpg',
-      alt: 'Chef Interview Feature',
-      title: 'Chef Philippe Interview',
-      description: 'Exclusive interview with Executive Chef Philippe about his journey from Lyon to New York and the art of French baking.',
-      premium: true,
-    },
-    {
-      id: 5,
-      src: '/images/media/timeout-review.jpg',
-      alt: 'Time Out NY Review',
-      title: 'Time Out: Top 10 Brunch',
-      description: '"Skip the tourist traps and head to Pavé for the most authentic French brunch experience in the city. The croque monsieur is life-changing." - Time Out New York',
-      premium: false,
-    },
-    {
-      id: 6,
-      src: '/images/media/vogue-feature.jpg',
-      alt: 'Vogue Dining Feature',
-      title: 'Vogue: Fashion Week Dining',
-      description: 'Where fashion insiders fuel up during NYFW - an exclusive look at the style set\'s favorite French café.',
-      premium: true,
-    },
-    {
-      id: 7,
-      src: '/images/media/wsj-article.jpg',
-      alt: 'Wall Street Journal Article',
-      title: 'WSJ: Business of Bakeries',
-      description: '"How Pavé revolutionized the NYC bakery scene with traditional techniques and modern business acumen." - Wall Street Journal Business Section',
-      premium: false,
-    },
-    {
-      id: 8,
-      src: '/images/media/bon-appetit.jpg',
-      alt: 'Bon Appétit Feature',
-      title: 'Bon Appétit: Secret Menu',
-      description: 'Discover the off-menu items that regulars order at this Midtown gem, plus Chef Philippe\'s personal favorites.',
-      premium: true,
-    },
-  ];
+  useEffect(() => {
+    fetchMediaArticles();
+  }, []);
+
+  const fetchMediaArticles = async () => {
+    try {
+      const response = await fetch('/api/media');
+      if (!response.ok) throw new Error('Failed to fetch media articles');
+      const data = await response.json();
+      setMediaItems(data.articles);
+    } catch (error) {
+      console.error('Error fetching media articles:', error);
+      // Fall back to empty array if API fails
+      setMediaItems([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleMediaClick = (item: MediaItem) => {
     setSelectedMedia(item);
@@ -92,6 +48,31 @@ export default function MediaSection() {
     setSelectedMedia(null);
   };
 
+  const formatDate = (date: Date | string) => {
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white px-4 py-20" data-section="media">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-light text-center mb-12 text-gray-900">
+            Press & Articles
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="aspect-square bg-gray-200 rounded-lg animate-pulse" />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white px-4 py-20" data-section="media">
       <div className="max-w-6xl mx-auto">
@@ -99,57 +80,63 @@ export default function MediaSection() {
           Press & Articles
         </h2>
 
-        {/* Media Grid - Optimized for mobile */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
-          {mediaItems.map((item) => (
-            <div
-              key={item.id}
-              className="relative aspect-square overflow-hidden rounded-lg bg-gray-100 cursor-zoom-in group"
-              onClick={() => handleMediaClick(item)}
-              data-testid={`media-item-${item.id}`}
-            >
-              {/* Placeholder for image */}
-              <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />
-              
-              {/* Actual image (would be used when images are available) */}
-              {/* <Image
-                src={item.src}
-                alt={item.alt}
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-110"
-                sizes="(max-width: 768px) 50vw, 25vw"
-              /> */}
-              
-              {/* Placeholder content */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center p-4">
-                  <div className="w-16 h-16 mx-auto mb-2 bg-gray-400 rounded-full" />
-                  <p className="text-xs text-gray-600">{item.title}</p>
-                </div>
-              </div>
+        {mediaItems.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-500">No articles available at the moment.</p>
+          </div>
+        ) : (
+          <>
+            {/* Media Grid - Optimized for mobile */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
+              {mediaItems.slice(0, 8).map((item) => (
+                <div
+                  key={item.id}
+                  className="relative aspect-square overflow-hidden rounded-lg bg-gray-100 cursor-zoom-in group"
+                  onClick={() => handleMediaClick(item)}
+                  data-testid={`media-item-${item.id}`}
+                >
+                  {/* Placeholder for image */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />
+                  
+                  {/* Actual image (would be used when images are available) */}
+                  {item.coverImage && (
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300">
+                      {/* Image would go here when available */}
+                    </div>
+                  )}
+                  
+                  {/* Placeholder content */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center p-4">
+                      <div className="w-16 h-16 mx-auto mb-2 bg-gray-400 rounded-full" />
+                      <p className="text-xs text-gray-600 line-clamp-2">{item.title}</p>
+                    </div>
+                  </div>
 
-              {/* Hover overlay with magnifier icon */}
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
-                <ZoomIn 
-                  className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" 
-                  size={32}
-                />
-              </div>
+                  {/* Hover overlay with magnifier icon */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
+                    <ZoomIn 
+                      className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" 
+                      size={32}
+                    />
+                  </div>
 
-              {/* Premium badge */}
-              {item.premium && (
-                <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white text-xs px-2 py-1 rounded-full font-medium">
-                  Premium
+                  {/* Premium badge */}
+                  {item.isPremium && (
+                    <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                      Premium
+                    </div>
+                  )}
                 </div>
-              )}
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* Footer text */}
-        <p className="text-center text-sm text-gray-500 mt-8">
-          Click on any image to view details
-        </p>
+            {/* Footer text */}
+            <p className="text-center text-sm text-gray-500 mt-8">
+              Click on any image to view details
+            </p>
+          </>
+        )}
       </div>
 
       {/* Modal */}
@@ -180,7 +167,7 @@ export default function MediaSection() {
 
             {/* Modal Content */}
             <div className="p-6">
-              {selectedMedia.premium ? (
+              {selectedMedia.isPremium ? (
                 /* Premium Content - Paywall */
                 <div className="text-center py-12">
                   <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center">
@@ -228,21 +215,34 @@ export default function MediaSection() {
                       <h5 className="font-semibold text-gray-900 mb-2">Details</h5>
                       <dl className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <dt className="text-gray-500">Category</dt>
-                          <dd className="text-gray-900">Gallery</dd>
+                          <dt className="text-gray-500">Source</dt>
+                          <dd className="text-gray-900">{selectedMedia.source || 'Pavé46'}</dd>
                         </div>
                         <div>
-                          <dt className="text-gray-500">Date Added</dt>
-                          <dd className="text-gray-900">January 2024</dd>
+                          <dt className="text-gray-500">Date</dt>
+                          <dd className="text-gray-900">{formatDate(selectedMedia.publishDate)}</dd>
                         </div>
-                        <div>
-                          <dt className="text-gray-500">Photography</dt>
-                          <dd className="text-gray-900">Studio Pavé</dd>
-                        </div>
-                        <div>
-                          <dt className="text-gray-500">Location</dt>
-                          <dd className="text-gray-900">New York</dd>
-                        </div>
+                        {selectedMedia.author && (
+                          <div>
+                            <dt className="text-gray-500">Author</dt>
+                            <dd className="text-gray-900">{selectedMedia.author}</dd>
+                          </div>
+                        )}
+                        {selectedMedia.link && (
+                          <div>
+                            <dt className="text-gray-500">Link</dt>
+                            <dd>
+                              <a 
+                                href={selectedMedia.link} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:underline"
+                              >
+                                View Original
+                              </a>
+                            </dd>
+                          </div>
+                        )}
                       </dl>
                     </div>
                   </div>
