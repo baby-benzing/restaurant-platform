@@ -47,7 +47,7 @@ export default function HomePage() {
         items={navItems}
         activeId={activeSection}
         onItemClick={handleSectionChange}
-        variant="dark"
+        variant={activeSection === 'home' ? 'dark' : 'light'}
       />
     </main>
   );

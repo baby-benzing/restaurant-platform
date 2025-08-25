@@ -44,9 +44,9 @@ export const LiquidGlassNav: React.FC<LiquidGlassNavProps> = ({
       activeButton: 'bg-gradient-to-b from-gray-900/20 to-gray-900/10',
       inactiveButton: 'hover:bg-gray-900/5',
       activeIcon: 'bg-gradient-to-br from-blue-600 to-blue-700 text-white',
-      inactiveIcon: 'bg-gradient-to-br from-gray-200 to-gray-300 text-gray-700',
-      activeLabel: 'text-gray-900',
-      inactiveLabel: 'text-gray-600',
+      inactiveIcon: 'bg-gradient-to-br from-gray-200 to-gray-300 text-black',
+      activeLabel: 'text-black font-semibold',
+      inactiveLabel: 'text-black',
     },
   };
 
