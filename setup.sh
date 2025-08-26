@@ -1,129 +1,117 @@
 #!/bin/bash
 
-# Restaurant Platform Quick Setup Script
-# This script sets up everything needed for a fresh installation
+# UNIFIED Setup Script - PostgreSQL 15 Alpine
+# Tested and verified to work with Prisma 5.8.1
 
-set -e  # Exit on error
+set -e
 
-echo "🚀 Restaurant Platform Setup Script"
-echo "===================================="
+echo "🚀 Restaurant Platform Setup"
+echo "============================"
 echo ""
 
-# Check if Docker is installed
-if ! command -v docker &> /dev/null; then
-    echo "❌ Docker is not installed. Please install Docker first."
-    echo "Visit: https://www.docker.com/get-started"
+# 1. Clean up any existing containers
+echo "1. Cleaning up existing containers..."
+docker stop restaurant-db 2>/dev/null || true
+docker rm restaurant-db 2>/dev/null || true
+echo "   ✓ Cleanup complete"
+
+# 2. Start PostgreSQL 15 Alpine (TESTED VERSION)
+echo ""
+echo "2. Starting PostgreSQL 15..."
+docker run -d \
+    --name restaurant-db \
+    -e POSTGRES_USER=postgres \
+    -e POSTGRES_PASSWORD=postgres \
+    -e POSTGRES_DB=restaurant_platform \
+    -p 5432:5432 \
+    postgres:15-alpine
+echo "   ✓ PostgreSQL started"
+
+# 3. Wait for database
+echo ""
+echo "3. Waiting for database (15 seconds)..."
+sleep 15
+
+# 4. Verify connection
+echo ""
+echo "4. Verifying database connection..."
+docker exec restaurant-db psql -U postgres -d restaurant_platform -c "SELECT 1;" > /dev/null
+if [ $? -eq 0 ]; then
+    echo "   ✓ Database connection verified"
+else
+    echo "   ❌ Database connection failed"
+    echo "   Docker logs:"
+    docker logs restaurant-db --tail 20
     exit 1
 fi
 
-# Check if pnpm is installed
+# 5. Install dependencies
+echo ""
+echo "5. Installing dependencies..."
 if ! command -v pnpm &> /dev/null; then
-    echo "📦 Installing pnpm..."
+    echo "   Installing pnpm..."
     npm install -g pnpm
 fi
-
-# Step 1: Start PostgreSQL
-echo "1️⃣ Starting PostgreSQL database..."
-if docker ps | grep -q restaurant-db; then
-    echo "   ✓ Database container already running"
-    echo "   Restarting to ensure clean state..."
-    docker restart restaurant-db
-    sleep 3
-else
-    # Remove any existing stopped container
-    docker rm -f restaurant-db 2>/dev/null || true
-    
-    # Start fresh container
-    docker run -d --name restaurant-db \
-        -e POSTGRES_USER=postgres \
-        -e POSTGRES_PASSWORD=postgres \
-        -e POSTGRES_DB=restaurant_platform \
-        -e POSTGRES_HOST_AUTH_METHOD=trust \
-        -p 5432:5432 \
-        postgres:16-alpine
-    echo "   ✓ Database started"
-    echo "   Waiting for database to be ready..."
-    sleep 8
-fi
-
-# Test database connection
-echo "   Testing database connection..."
-until docker exec restaurant-db pg_isready -U postgres -d restaurant_platform > /dev/null 2>&1; do
-    echo "   Waiting for database to accept connections..."
-    sleep 2
-done
-echo "   ✓ Database is ready"
-
-# Step 2: Install dependencies
-echo ""
-echo "2️⃣ Installing dependencies..."
 pnpm install
 echo "   ✓ Dependencies installed"
 
-# Step 3: Set up environment files
+# 6. Create environment files
 echo ""
-echo "3️⃣ Setting up environment variables..."
+echo "6. Creating environment files..."
 
-# Create .env.local for the app
-if [ ! -f apps/pave46/.env.local ]; then
-    cat > apps/pave46/.env.local << EOL
+# Create packages/database/.env
+cat > packages/database/.env << 'EOF'
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/restaurant_platform"
+EOF
+echo "   ✓ Created packages/database/.env"
+
+# Create apps/pave46/.env.local
+cat > apps/pave46/.env.local << 'EOF'
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/restaurant_platform"
 RESTAURANT_SLUG=pave
 NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="dev-secret-key-for-local-development-only"
+NEXTAUTH_SECRET="development-secret-key"
 NODE_ENV="development"
-EOL
-    echo "   ✓ Created apps/pave46/.env.local file"
-else
-    echo "   ✓ apps/pave46/.env.local already exists"
-fi
+EOF
+echo "   ✓ Created apps/pave46/.env.local"
 
-# Create .env for database package (needed for Prisma)
-if [ ! -f packages/database/.env ]; then
-    cat > packages/database/.env << EOL
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/restaurant_platform"
-EOL
-    echo "   ✓ Created packages/database/.env file"
-else
-    echo "   ✓ packages/database/.env already exists"
-fi
-
-# Step 4: Set up Prisma
+# 7. Setup Prisma
 echo ""
-echo "4️⃣ Setting up database with Prisma..."
+echo "7. Setting up database schema..."
 cd packages/database
 
+# Generate Prisma client
 echo "   Generating Prisma client..."
-pnpm prisma generate
+npx prisma generate
 
-echo "   Running migrations..."
-pnpm prisma migrate deploy || pnpm prisma db push
+# Push schema to database
+echo "   Creating database tables..."
+npx prisma db push
 
-echo "   Seeding database with restaurant data..."
-pnpm prisma db seed
+# Seed database
+echo "   Seeding database with Pavé data..."
+npm run db:seed
 
 cd ../..
-echo "   ✓ Database setup complete"
 
-# Step 5: Build packages
+# 8. Build packages
 echo ""
-echo "5️⃣ Building packages..."
+echo "8. Building packages..."
 pnpm build
-echo "   ✓ Build complete"
 
-# Done!
 echo ""
-echo "✅ Setup complete!"
+echo "✅ Setup Complete!"
 echo ""
-echo "To start the development server, run:"
+echo "Database is running with:"
+echo "  • PostgreSQL 15 Alpine"
+echo "  • User: postgres"
+echo "  • Password: postgres"
+echo "  • Database: restaurant_platform"
+echo "  • Port: 5432"
+echo ""
+echo "To start the development server:"
 echo "  cd apps/pave46"
 echo "  pnpm dev"
 echo ""
-echo "The app will be available at http://localhost:3000"
-echo ""
-echo "For admin access in development:"
-echo "1. Go to http://localhost:3000/auth/login"
-echo "2. Use the yellow 'Development Mode' panel"
-echo "3. Click 'Admin' for full access"
-echo ""
-echo "Happy coding! 🎉"
+echo "To check database:"
+echo "  docker exec -it restaurant-db psql -U postgres -d restaurant_platform"
