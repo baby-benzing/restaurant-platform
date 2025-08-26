@@ -28,7 +28,7 @@ restaurant-platform/
 - pnpm (`npm install -g pnpm`)
 - Docker (for PostgreSQL database)
 
-### Automated Setup (Recommended)
+### First-Time Setup (New Machine/Fresh Clone)
 
 1. **Clone the repository:**
 ```bash
@@ -36,16 +36,18 @@ git clone https://github.com/claudev-cheval/restaurant-platform.git
 cd restaurant-platform
 ```
 
-2. **Run the setup script:**
+2. **Run the one-time setup script:**
 ```bash
-./setup.sh
+./setup.sh  # Run this ONLY on first setup
 ```
 
 This will automatically:
 - Start PostgreSQL database with Docker
 - Install all dependencies
-- Set up environment variables
-- Initialize and seed the database with Pavé restaurant data
+- Set up environment variables (.env.local)
+- Generate Prisma client
+- Create database tables
+- Seed the database with Pavé restaurant data (not mock/oyster data!)
 - Build all packages
 
 3. **Start the development server:**
@@ -55,6 +57,30 @@ pnpm dev
 ```
 
 ✅ The app will be available at http://localhost:3000
+
+### Daily Development (After Initial Setup)
+
+Once you've run the initial setup, you have two options for daily development:
+
+**Option 1: Use the development script (Recommended)**
+```bash
+./start-dev.sh  # Starts database + all dev servers
+```
+
+**Option 2: Manual start**
+```bash
+# Start existing database container
+docker start restaurant-db
+
+# Start development server
+cd apps/pave46
+pnpm dev
+```
+
+📝 **Note:** 
+- `./setup.sh` = One-time setup for new installations (creates database, seeds data)
+- `./start-dev.sh` = Daily use (starts existing database and dev servers)
+- Don't run `./setup.sh` again unless you want to reset everything!
 
 ### Manual Setup
 
