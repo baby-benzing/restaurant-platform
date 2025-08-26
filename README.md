@@ -25,15 +25,49 @@ restaurant-platform/
 ### Prerequisites
 
 - Node.js 18+
-- pnpm 8.15.1+
-- Docker (optional, for database)
+- pnpm (`npm install -g pnpm`)
+- Docker (for PostgreSQL database)
 
-### Setup
+### Automated Setup (Recommended)
 
 1. **Clone the repository:**
 ```bash
-git clone [repository-url]
+git clone https://github.com/claudev-cheval/restaurant-platform.git
 cd restaurant-platform
+```
+
+2. **Run the setup script:**
+```bash
+./setup.sh
+```
+
+This will automatically:
+- Start PostgreSQL database with Docker
+- Install all dependencies
+- Set up environment variables
+- Initialize and seed the database with Pavé restaurant data
+- Build all packages
+
+3. **Start the development server:**
+```bash
+cd apps/pave46
+pnpm dev
+```
+
+✅ The app will be available at http://localhost:3000
+
+### Manual Setup
+
+If you prefer to set up manually:
+
+1. **Start PostgreSQL database:**
+```bash
+docker run -d --name restaurant-db \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=restaurant_platform \
+  -p 5432:5432 \
+  postgres:16-alpine
 ```
 
 2. **Install dependencies:**
@@ -41,83 +75,48 @@ cd restaurant-platform
 pnpm install
 ```
 
-### Quick Start (Recommended)
-
-Use the provided startup script for the easiest setup:
-
+3. **Set up environment variables:**
 ```bash
-./start-dev.sh
+cd apps/pave46
+cp .env.example .env.local
 ```
 
-This script will:
-- Start PostgreSQL database (if Docker is available)
-- Generate Prisma client
-- Update database schema
-- Optionally seed sample data
-- Start all development servers
-
-### Manual Setup
-
-1. **Set up environment variables:**
-```bash
-# Copy the example env file
-cp .env.example .env
-
-# Edit .env with your settings:
-# DATABASE_URL=postgresql://postgres:postgres@localhost:5432/restaurant_platform
-# JWT_SECRET=your-secret-key-change-in-production
-# NEXT_PUBLIC_SITE_URL=http://localhost:3000
+Edit `.env.local`:
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/restaurant_platform?schema=public"
+RESTAURANT_SLUG=pave
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="dev-secret-key-for-local-development-only"
+NODE_ENV="development"
 ```
 
-2. **Start the database (Option A - Using Docker):**
-
-**First, ensure Docker Desktop is running:**
-- On Mac: Open Docker Desktop from Applications
-- On Windows: Start Docker Desktop from Start Menu
-- On Linux: Start Docker daemon with `sudo systemctl start docker`
-
+4. **Initialize the database:**
 ```bash
-# Once Docker is running, start the database:
-docker run -d \
-  --name restaurant-db \
-  -e POSTGRES_USER=postgres \
-  -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_DB=restaurant_platform \
-  -p 5432:5432 \
-  postgres:16-alpine
-
-# Or if you prefer using docker-compose (if installed):
-docker-compose up -d
-```
-
-**Alternative (Option B - Without Docker):**
-- Install PostgreSQL locally
-- Create a database named `restaurant_platform`
-- Update DATABASE_URL in .env with your connection string
-
-3. **Set up the database:**
-```bash
-cd packages/database
+cd ../../packages/database
 
 # Generate Prisma client
-pnpm db:generate
+pnpm prisma generate
 
-# Run migrations
-pnpm db:push
+# Create database tables
+pnpm prisma migrate deploy
 
-# (Optional) Seed with sample data
-pnpm db:seed
-
-cd ../..
+# Seed with Pavé restaurant data
+pnpm prisma db seed
 ```
 
-4. **Start the development server:**
+5. **Build packages:**
 ```bash
-# From the root directory
+cd ../..  # Back to root
+pnpm build
+```
+
+6. **Start the development server:**
+```bash
+cd apps/pave46
 pnpm dev
 ```
 
-The Pavé46 application will be available at http://localhost:3000
+✅ The app will be available at http://localhost:3000
 
 ## Development Guide
 
@@ -229,6 +228,24 @@ pnpm start            # Start production server
 
 ## Common Issues & Solutions
 
+### "No menu items found" or "Oyster data"
+
+This means the database isn't properly seeded. Fix:
+```bash
+cd packages/database
+pnpm prisma db seed
+```
+
+### "Database not responding" error
+
+The Prisma client isn't generated. Fix:
+```bash
+cd packages/database
+pnpm prisma generate
+pnpm prisma migrate deploy
+pnpm prisma db seed
+```
+
 ### Docker Issues
 
 **Error: "Cannot connect to the Docker daemon"**
@@ -290,13 +307,25 @@ rm -rf node_modules pnpm-lock.yaml
 pnpm install
 ```
 
-## Authentication
+## Admin Access
 
-### Default Admin User
+### Development Mode
 
-After seeding the database, you can login with:
-- Email: `admin@pave46.com`
-- Password: `AdminPassword123!`
+In development, you have two options:
+
+1. **Quick Dev Login (Easiest):**
+   - Go to http://localhost:3000/auth/login
+   - Use the yellow "Development Mode - Quick Login" panel
+   - Click any role button (Admin, Editor, Viewer)
+
+2. **Default Admin User:**
+   - After seeding the database, login with:
+   - Email: `admin@pave46.com`
+   - Password: `AdminPassword123!`
+
+### Production Mode
+
+For production, configure Google SSO following `docs/GOOGLE_SSO_SETUP.md`
 
 ### Creating New Users
 
