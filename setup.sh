@@ -44,9 +44,11 @@ echo "2️⃣ Installing dependencies..."
 pnpm install
 echo "   ✓ Dependencies installed"
 
-# Step 3: Set up environment file
+# Step 3: Set up environment files
 echo ""
 echo "3️⃣ Setting up environment variables..."
+
+# Create .env.local for the app
 if [ ! -f apps/pave46/.env.local ]; then
     cat > apps/pave46/.env.local << EOL
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/restaurant_platform?schema=public"
@@ -55,9 +57,19 @@ NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="dev-secret-key-for-local-development-only"
 NODE_ENV="development"
 EOL
-    echo "   ✓ Created .env.local file"
+    echo "   ✓ Created apps/pave46/.env.local file"
 else
-    echo "   ✓ .env.local already exists"
+    echo "   ✓ apps/pave46/.env.local already exists"
+fi
+
+# Create .env for database package (needed for Prisma)
+if [ ! -f packages/database/.env ]; then
+    cat > packages/database/.env << EOL
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/restaurant_platform?schema=public"
+EOL
+    echo "   ✓ Created packages/database/.env file"
+else
+    echo "   ✓ packages/database/.env already exists"
 fi
 
 # Step 4: Set up Prisma

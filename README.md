@@ -102,12 +102,20 @@ pnpm install
 ```
 
 3. **Set up environment variables:**
+
+**IMPORTANT:** Environment files are needed in TWO locations:
+
 ```bash
+# For the app (apps/pave46/.env.local)
 cd apps/pave46
 cp .env.example .env.local
+
+# For Prisma database commands (packages/database/.env)
+cd ../../packages/database
+echo 'DATABASE_URL="postgresql://postgres:postgres@localhost:5432/restaurant_platform?schema=public"' > .env
 ```
 
-Edit `.env.local`:
+Edit `apps/pave46/.env.local`:
 ```env
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/restaurant_platform?schema=public"
 RESTAURANT_SLUG=pave
