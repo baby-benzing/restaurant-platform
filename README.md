@@ -270,13 +270,37 @@ cd packages/database
 pnpm prisma db seed
 ```
 
-### "Database not responding" error
+### "Database not responding" or "User postgres was denied access" error
 
-The Prisma client isn't generated. Fix:
+This is a PostgreSQL permission issue. Use the reset script:
 ```bash
+./reset-database.sh
+```
+
+This will:
+- Completely reset the PostgreSQL container
+- Fix all permission issues
+- Recreate the database with proper access
+- Seed with Pavé restaurant data
+
+Alternative manual fix:
+```bash
+# 1. Stop and remove the container
+docker stop restaurant-db && docker rm restaurant-db
+
+# 2. Start fresh with proper permissions
+docker run -d --name restaurant-db \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=restaurant_platform \
+  -e POSTGRES_INITDB_ARGS="--auth-host=trust --auth-local=trust" \
+  -p 5432:5432 \
+  postgres:16-alpine
+
+# 3. Wait 10 seconds, then continue with setup
+sleep 10
 cd packages/database
-pnpm prisma generate
-pnpm prisma migrate deploy
+pnpm prisma db push --force-reset
 pnpm prisma db seed
 ```
 
