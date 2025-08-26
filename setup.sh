@@ -25,18 +25,34 @@ fi
 # Step 1: Start PostgreSQL
 echo "1️⃣ Starting PostgreSQL database..."
 if docker ps | grep -q restaurant-db; then
-    echo "   ✓ Database already running"
+    echo "   ✓ Database container already running"
+    echo "   Restarting to ensure clean state..."
+    docker restart restaurant-db
+    sleep 3
 else
+    # Remove any existing stopped container
+    docker rm -f restaurant-db 2>/dev/null || true
+    
+    # Start fresh container
     docker run -d --name restaurant-db \
         -e POSTGRES_USER=postgres \
         -e POSTGRES_PASSWORD=postgres \
         -e POSTGRES_DB=restaurant_platform \
+        -e POSTGRES_HOST_AUTH_METHOD=trust \
         -p 5432:5432 \
         postgres:16-alpine
     echo "   ✓ Database started"
     echo "   Waiting for database to be ready..."
-    sleep 5
+    sleep 8
 fi
+
+# Test database connection
+echo "   Testing database connection..."
+until docker exec restaurant-db pg_isready -U postgres -d restaurant_platform > /dev/null 2>&1; do
+    echo "   Waiting for database to accept connections..."
+    sleep 2
+done
+echo "   ✓ Database is ready"
 
 # Step 2: Install dependencies
 echo ""
@@ -51,7 +67,7 @@ echo "3️⃣ Setting up environment variables..."
 # Create .env.local for the app
 if [ ! -f apps/pave46/.env.local ]; then
     cat > apps/pave46/.env.local << EOL
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/restaurant_platform?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/restaurant_platform"
 RESTAURANT_SLUG=pave
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="dev-secret-key-for-local-development-only"
@@ -65,7 +81,7 @@ fi
 # Create .env for database package (needed for Prisma)
 if [ ! -f packages/database/.env ]; then
     cat > packages/database/.env << EOL
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/restaurant_platform?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/restaurant_platform"
 EOL
     echo "   ✓ Created packages/database/.env file"
 else
