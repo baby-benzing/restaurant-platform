@@ -23,7 +23,7 @@ docker run -d \
     -e POSTGRES_USER=postgres \
     -e POSTGRES_PASSWORD=postgres \
     -e POSTGRES_DB=restaurant_platform \
-    -p 5432:5432 \
+    -p 5433:5432 \
     postgres:15-alpine
 echo "   ✓ PostgreSQL started"
 
@@ -61,13 +61,13 @@ echo "6. Creating environment files..."
 
 # Create packages/database/.env
 cat > packages/database/.env << 'EOF'
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/restaurant_platform"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/restaurant_platform"
 EOF
 echo "   ✓ Created packages/database/.env"
 
 # Create apps/pave46/.env.local
 cat > apps/pave46/.env.local << 'EOF'
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/restaurant_platform"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/restaurant_platform"
 RESTAURANT_SLUG=pave
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="development-secret-key"
@@ -107,7 +107,7 @@ echo "  • PostgreSQL 15 Alpine"
 echo "  • User: postgres"
 echo "  • Password: postgres"
 echo "  • Database: restaurant_platform"
-echo "  • Port: 5432"
+echo "  • Port: 5433"
 echo ""
 echo "To start the development server:"
 echo "  cd apps/pave46"

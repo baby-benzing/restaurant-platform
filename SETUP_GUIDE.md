@@ -2,7 +2,7 @@
 
 ## Prerequisites
 - Node.js 18+ 
-- PostgreSQL 16+
+- PostgreSQL 15+
 - pnpm (`npm install -g pnpm`)
 
 ## Initial Setup
@@ -25,8 +25,8 @@ docker run -d --name restaurant-db \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_PASSWORD=postgres \
   -e POSTGRES_DB=restaurant_platform \
-  -p 5432:5432 \
-  postgres:16-alpine
+  -p 5433:5432 \
+  postgres:15-alpine
 ```
 
 ### 4. Configure environment variables
@@ -38,7 +38,7 @@ cp .env.example .env.local
 Edit `.env.local` with your settings:
 ```env
 # Required
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/restaurant_platform?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/restaurant_platform"
 RESTAURANT_SLUG=pave
 
 # For production (optional in dev)

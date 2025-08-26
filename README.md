@@ -92,7 +92,7 @@ docker run -d --name restaurant-db \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_PASSWORD=postgres \
   -e POSTGRES_DB=restaurant_platform \
-  -p 5432:5432 \
+  -p 5433:5432 \
   postgres:16-alpine
 ```
 
@@ -112,12 +112,12 @@ cp .env.example .env.local
 
 # For Prisma database commands (packages/database/.env)
 cd ../../packages/database
-echo 'DATABASE_URL="postgresql://postgres:postgres@localhost:5432/restaurant_platform?schema=public"' > .env
+echo 'DATABASE_URL="postgresql://postgres:postgres@localhost:5433/restaurant_platform"' > .env
 ```
 
 Edit `apps/pave46/.env.local`:
 ```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/restaurant_platform?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/restaurant_platform"
 RESTAURANT_SLUG=pave
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="dev-secret-key-for-local-development-only"
@@ -294,7 +294,7 @@ docker run -d --name restaurant-db \
   -e POSTGRES_PASSWORD=postgres \
   -e POSTGRES_DB=restaurant_platform \
   -e POSTGRES_INITDB_ARGS="--auth-host=trust --auth-local=trust" \
-  -p 5432:5432 \
+  -p 5433:5432 \
   postgres:16-alpine
 
 # 3. Wait 10 seconds, then continue with setup
