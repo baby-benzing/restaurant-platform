@@ -14,7 +14,7 @@ export default function Hero({ restaurant }: HeroProps) {
       <div className="absolute inset-0 z-0">
         <OptimizedImage
           src="/images/restaurant/hero-main.jpg"
-          alt="Pavé46 Restaurant"
+          alt="Noreetuh"
           fill
           priority
           quality={90}

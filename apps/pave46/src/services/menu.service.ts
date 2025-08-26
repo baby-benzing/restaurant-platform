@@ -34,7 +34,8 @@ export interface UpdateMenuItemInput extends Partial<CreateMenuItemInput> {
 
 export class MenuService {
   async getRestaurantId(): Promise<string> {
-    const slug = process.env.RESTAURANT_SLUG || 'pave';
+    // Default to 'pave' which is the seeded restaurant slug
+    const slug = 'pave';
     const restaurant = await prisma.restaurant.findUnique({
       where: { slug },
     });

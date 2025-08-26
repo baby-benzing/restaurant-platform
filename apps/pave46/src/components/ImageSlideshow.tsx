@@ -59,9 +59,16 @@ export default function ImageSlideshow() {
         ))}
       </div>
 
-      {/* Logo - White version for visibility on photos */}
-      <div className="absolute top-8 left-8 z-10">
-        <Logo width={220} height={110} variant="white" />
+      {/* Logo with liquid glass backdrop for visibility - horizontally centered */}
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10">
+        <div className="relative overflow-hidden">
+          {/* Liquid glass backdrop - flatter box, compressed height */}
+          <div className="absolute inset-0 -inset-x-2 inset-y-4 bg-white/10 backdrop-blur-md rounded-xl" />
+          {/* Logo - no border visible */}
+          <div className="relative px-2">
+            <Logo width={280} height={125} variant="white" />
+          </div>
+        </div>
       </div>
 
 

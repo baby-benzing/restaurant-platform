@@ -1,23 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { menuService } from '@/services/menu.service';
-import { cookies } from 'next/headers';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Check authentication
-    const cookieStore = await cookies();
-    const authToken = cookieStore.get('auth-token');
-    
-    if (!authToken) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
+    // Note: Authentication is handled by middleware
     const resolvedParams = await params;
     const item = await menuService.getMenuItem(resolvedParams.id);
     
@@ -46,17 +35,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Check authentication
-    const cookieStore = await cookies();
-    const authToken = cookieStore.get('auth-token');
-    
-    if (!authToken) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
+    // Note: Authentication is handled by middleware
     const resolvedParams = await params;
     const body = await request.json();
     const updatedItem = await menuService.updateMenuItem({

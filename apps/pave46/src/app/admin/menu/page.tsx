@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Container, Section } from '@restaurant-platform/web-common';
 import Link from 'next/link';
+import { auditMenuChange } from '@/lib/audit';
 
 interface MenuItem {
   id: string;
@@ -49,12 +50,20 @@ export default function MenuManagementPage() {
     }
 
     try {
+      // Find the item being deleted for audit log
+      const itemToDelete = menuItems.find(item => item.id === id);
+      
       const response = await fetch(`/api/admin/menu?id=${id}`, { 
         method: 'DELETE' 
       });
       const result = await response.json();
       if (result.success) {
         setMenuItems(menuItems.filter(item => item.id !== id));
+        
+        // Track the deletion in audit log
+        if (itemToDelete) {
+          await auditMenuChange('delete', itemToDelete);
+        }
       }
     } catch (error) {
       console.error('Failed to delete menu item:', error);
@@ -63,13 +72,13 @@ export default function MenuManagementPage() {
 
   const categories = [
     { value: 'all', label: 'All Items' },
-    { value: 'breads', label: 'Breads' },
-    { value: 'sandwiches', label: 'Sandwiches' },
-    { value: 'focaccia', label: 'Focaccia' },
-    { value: 'pastries', label: 'Pastries' },
-    { value: 'afternoon', label: 'Afternoon Menu' },
-    { value: 'cocktails', label: 'Cocktails' },
-    { value: 'wines', label: 'Wines' },
+    { value: 'Breads', label: 'Breads' },
+    { value: 'Sandwiches', label: 'Sandwiches' },
+    { value: 'Focaccia', label: 'Focaccia' },
+    { value: 'Pastries', label: 'Pastries' },
+    { value: 'Afternoon Menu', label: 'Afternoon Menu' },
+    { value: 'Cocktails', label: 'Cocktails' },
+    { value: 'Wines', label: 'Wines' },
   ];
 
   const filteredItems = selectedCategory === 'all' 

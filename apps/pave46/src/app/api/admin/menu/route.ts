@@ -1,19 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { menuService } from '@/services/menu.service';
-import { cookies } from 'next/headers';
 
 export async function GET(request: NextRequest) {
   try {
-    // Check authentication
-    const cookieStore = await cookies();
-    const authToken = cookieStore.get('auth-token');
-    
-    if (!authToken) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
+    // Note: Authentication is handled by middleware
+    // If we reach here, the user is authenticated
 
     const searchParams = request.nextUrl.searchParams;
     const category = searchParams.get('category') || undefined;
@@ -44,16 +35,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    // Check authentication
-    const cookieStore = await cookies();
-    const authToken = cookieStore.get('auth-token');
-    
-    if (!authToken) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
+    // Note: Authentication is handled by middleware
 
     const body = await request.json();
     const newItem = await menuService.createMenuItem(body);
@@ -73,16 +55,7 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    // Check authentication
-    const cookieStore = await cookies();
-    const authToken = cookieStore.get('auth-token');
-    
-    if (!authToken) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
+    // Note: Authentication is handled by middleware
 
     const searchParams = request.nextUrl.searchParams;
     const id = searchParams.get('id');
@@ -110,16 +83,7 @@ export async function DELETE(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    // Check authentication
-    const cookieStore = await cookies();
-    const authToken = cookieStore.get('auth-token');
-    
-    if (!authToken) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
+    // Note: Authentication is handled by middleware
 
     const body = await request.json();
     const updatedItem = await menuService.updateMenuItem(body);

@@ -1,14 +1,11 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { mockMediaArticles } from './mockData';
+import { mediaService } from '@/services/media.service';
 
 // GET - Fetch all media articles
 export async function GET() {
   try {
-    // Sort by sortOrder
-    const sortedArticles = [...mockMediaArticles].sort((a, b) => a.sortOrder - b.sortOrder);
-    
-    return NextResponse.json({ articles: sortedArticles });
+    const articles = await mediaService.getArticles();
+    return NextResponse.json({ articles });
   } catch (error) {
     console.error('Error fetching media articles:', error);
     return NextResponse.json(
@@ -21,25 +18,22 @@ export async function GET() {
 // POST - Create a new media article
 export async function POST(request: Request) {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('auth-token');
-    
-    if (!token) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
+    // Note: Authentication is handled by middleware
     const data = await request.json();
     
-    const newArticle = {
-      id: String(Date.now()),
+    const newArticle = await mediaService.createArticle({
       restaurantId: 'pave46',
-      ...data,
+      title: data.title,
+      description: data.description,
+      coverImage: data.coverImage,
       publishDate: new Date(data.publishDate),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    
-    mockMediaArticles.push(newArticle);
+      source: data.source,
+      author: data.author,
+      link: data.link,
+      isPremium: data.isPremium || false,
+      isPublished: data.isPublished !== false,
+      sortOrder: data.sortOrder ?? 999,
+    });
     
     return NextResponse.json({ article: newArticle });
   } catch (error) {
@@ -54,30 +48,13 @@ export async function POST(request: Request) {
 // PUT - Update multiple articles (for reordering)
 export async function PUT(request: Request) {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('auth-token');
-    
-    if (!token) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
+    // Note: Authentication is handled by middleware
     const { articles } = await request.json();
     
-    // Update sortOrder for each article
-    articles.forEach((updated: any) => {
-      const index = mockMediaArticles.findIndex(a => a.id === updated.id);
-      if (index !== -1) {
-        mockMediaArticles[index] = {
-          ...mockMediaArticles[index],
-          ...updated,
-          publishDate: new Date(updated.publishDate),
-        };
-      }
-    });
+    // Update articles with new order
+    const updatedArticles = await mediaService.updateArticlesOrder(articles);
     
-    const sortedArticles = [...mockMediaArticles].sort((a, b) => a.sortOrder - b.sortOrder);
-    
-    return NextResponse.json({ articles: sortedArticles });
+    return NextResponse.json({ articles: updatedArticles });
   } catch (error) {
     console.error('Error updating media articles:', error);
     return NextResponse.json(

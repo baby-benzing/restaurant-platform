@@ -22,9 +22,10 @@ interface SortableMediaItemProps {
   article: MediaArticle;
   onEdit: (article: MediaArticle) => void;
   onDelete: (id: string) => void;
+  onPreview: (article: MediaArticle) => void;
 }
 
-export function SortableMediaItem({ article, onEdit, onDelete }: SortableMediaItemProps) {
+export function SortableMediaItem({ article, onEdit, onDelete, onPreview }: SortableMediaItemProps) {
   const {
     attributes,
     listeners,
@@ -121,6 +122,13 @@ export function SortableMediaItem({ article, onEdit, onDelete }: SortableMediaIt
       {/* Actions */}
       <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
+          onClick={() => onPreview(article)}
+          className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+          title="Preview article"
+        >
+          <Eye size={18} />
+        </button>
+        <button
           onClick={() => onEdit(article)}
           className="p-2 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
           title="Edit article"
@@ -139,9 +147,13 @@ export function SortableMediaItem({ article, onEdit, onDelete }: SortableMediaIt
       {/* Status Indicator */}
       <div className="flex items-center">
         {article.isPublished ? (
-          <Eye size={18} className="text-green-600" title="Published" />
+          <div className="text-green-600" title="Published">
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+          </div>
         ) : (
-          <EyeOff size={18} className="text-gray-400" title="Draft" />
+          <div className="text-gray-400" title="Draft">
+            <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+          </div>
         )}
       </div>
     </div>

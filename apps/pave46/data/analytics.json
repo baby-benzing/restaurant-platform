@@ -1,0 +1,42 @@
+{
+  "pageViews": [
+    {
+      "id": "ce2e9e55-fb14-429e-8e40-34a15ef246c3",
+      "path": "/",
+      "timestamp": "2025-08-26T02:59:43.131Z",
+      "visitorId": "9b55b4d16f143348",
+      "referrer": "http://localhost:3000/",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36",
+      "ip": "::1"
+    },
+    {
+      "id": "0d34c0bb-8547-4bf3-90ff-49fa99096e75",
+      "path": "/",
+      "timestamp": "2025-08-26T03:10:01.892Z",
+      "visitorId": "9b55b4d16f143348",
+      "referrer": "http://localhost:3000/",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36",
+      "ip": "::1"
+    },
+    {
+      "id": "458821fb-e1dc-46d9-a019-2773f4a09b8a",
+      "path": "/",
+      "timestamp": "2025-08-26T03:10:20.597Z",
+      "visitorId": "9b55b4d16f143348",
+      "referrer": "http://localhost:3000/",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36",
+      "ip": "::1"
+    }
+  ],
+  "uniqueVisitorIds": [
+    "9b55b4d16f143348"
+  ],
+  "dailyStats": {
+    "2025-08-26": {
+      "views": 3,
+      "uniqueVisitors": [
+        "9b55b4d16f143348"
+      ]
+    }
+  }
+}

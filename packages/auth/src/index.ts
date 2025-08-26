@@ -3,6 +3,13 @@ export * from './utils/password';
 export * from './utils/jwt';
 export * from './middleware/rbac';
 
+// NextAuth exports
+export { 
+  createAuthConfig, 
+  isEmailAllowed,
+  type AdminWhitelist 
+} from './providers/nextauth.config';
+
 // Re-export types
 export type { TokenPayload } from './utils/jwt';
 export type { PasswordValidationResult } from './utils/password';

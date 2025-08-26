@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
 import '@restaurant-platform/web-common/src/styles/globals.css';
 import './globals.css';
+import { AnalyticsTracker } from '@/components/AnalyticsTracker';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -79,6 +80,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body className={inter.className}>
+        <AnalyticsTracker />
         {children}
       </body>
     </html>

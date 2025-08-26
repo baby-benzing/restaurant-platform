@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import AdminSidebar from '@/components/admin/AdminSidebar';
+import { DevModeIndicator } from '@/components/admin/DevModeIndicator';
 
 export default async function AdminLayout({
   children,
@@ -10,8 +11,11 @@ export default async function AdminLayout({
   // Check if user is authenticated
   const cookieStore = await cookies();
   const authToken = cookieStore.get('auth-token');
+  const nextAuthSession = cookieStore.get('next-auth.session-token');
+  const devBypass = cookieStore.get('dev-bypass-active');
 
-  if (!authToken) {
+  // Check for any valid authentication
+  if (!authToken && !nextAuthSession && !devBypass) {
     redirect('/auth/login');
   }
 
@@ -51,6 +55,7 @@ export default async function AdminLayout({
           </div>
         </main>
       </div>
+      <DevModeIndicator />
     </div>
   );
 }

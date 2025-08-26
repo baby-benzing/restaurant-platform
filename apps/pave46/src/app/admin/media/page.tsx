@@ -5,6 +5,7 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableMediaItem } from '@/components/admin/SortableMediaItem';
 import { MediaArticleForm } from '@/components/admin/MediaArticleForm';
+import { MediaPreviewModal } from '@/components/admin/MediaPreviewModal';
 
 interface MediaArticle {
   id: string;
@@ -25,6 +26,7 @@ export default function MediaManagementPage() {
   const [loading, setLoading] = useState(true);
   const [selectedArticle, setSelectedArticle] = useState<MediaArticle | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [previewArticle, setPreviewArticle] = useState<MediaArticle | null>(null);
   const [saving, setSaving] = useState(false);
 
   const sensors = useSensors(
@@ -91,6 +93,10 @@ export default function MediaManagementPage() {
   const handleAdd = () => {
     setSelectedArticle(null);
     setIsFormOpen(true);
+  };
+
+  const handlePreview = (article: MediaArticle) => {
+    setPreviewArticle(article);
   };
 
   const handleDelete = async (id: string) => {
@@ -192,6 +198,7 @@ export default function MediaManagementPage() {
                     article={article}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
+                    onPreview={handlePreview}
                   />
                 ))}
               </div>
@@ -211,6 +218,12 @@ export default function MediaManagementPage() {
           saving={saving}
         />
       )}
+
+      {/* Preview Modal */}
+      <MediaPreviewModal 
+        article={previewArticle}
+        onClose={() => setPreviewArticle(null)}
+      />
     </div>
   );
 }

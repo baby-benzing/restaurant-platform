@@ -2,17 +2,28 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const [userRole, setUserRole] = useState<string>('');
+
+  useEffect(() => {
+    // In production, this would get the role from session
+    // For now, we'll check if dev bypass is active
+    const isDevMode = document.cookie.includes('dev-bypass-active=true');
+    setUserRole('ADMIN'); // Mock - in production, get from session
+  }, []);
 
   const menuItems = [
-    { href: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
-    { href: '/admin/menu', label: 'Menu Management', icon: '🍽️' },
-    { href: '/admin/media', label: 'Press & Articles', icon: '📰' },
-    { href: '/admin/hours', label: 'Operating Hours', icon: '🕐' },
-    { href: '/admin/contact', label: 'Contact Info', icon: '📞' },
-  ];
+    { href: '/admin/dashboard', label: 'Dashboard', icon: '📊', requiredRole: null },
+    { href: '/admin/menu', label: 'Menu Management', icon: '🍽️', requiredRole: null },
+    { href: '/admin/media', label: 'Press & Articles', icon: '📰', requiredRole: null },
+    { href: '/admin/hours', label: 'Operating Hours', icon: '🕐', requiredRole: null },
+    { href: '/admin/contact', label: 'Contact Info', icon: '📞', requiredRole: null },
+    { href: '/admin/users', label: 'User Management', icon: '👥', requiredRole: 'ADMIN' },
+    { href: '/admin/audit', label: 'Audit Logs', icon: '📋', requiredRole: 'ADMIN' },
+  ].filter(item => !item.requiredRole || userRole === item.requiredRole);
 
   return (
     <aside className="fixed left-0 top-0 h-full w-64 bg-white border-r">

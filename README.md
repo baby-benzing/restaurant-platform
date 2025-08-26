@@ -5,7 +5,7 @@ A multi-restaurant website platform with shared components and individual restau
 ## Project Structure
 
 ```
-custom_web/
+restaurant-platform/
 ├── apps/
 │   └── pave46/              # Pavé46 restaurant application
 ├── packages/
@@ -33,7 +33,7 @@ custom_web/
 1. **Clone the repository:**
 ```bash
 git clone [repository-url]
-cd custom_web
+cd restaurant-platform
 ```
 
 2. **Install dependencies:**

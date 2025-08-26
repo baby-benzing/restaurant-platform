@@ -13,7 +13,7 @@ export default function Hero({ restaurant }: HeroProps) {
       {/* Background Image with Optimization */}
       <div className="absolute inset-0 z-0">
         <OptimizedImage
-          src="/images/restaurant/hero-main.jpg"
+          src="/images/restaurant/baguette_brush.jpeg"
           alt="Pavé46 Restaurant"
           fill
           priority

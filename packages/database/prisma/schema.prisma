@@ -49,13 +49,14 @@ model Menu {
 }
 
 model MenuSection {
-  id          String   @id @default(cuid())
+  id          String          @id @default(cuid())
   menuId      String
   name        String
   description String?
-  sortOrder   Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  category    MenuCategory?   // Enum for menu categories
+  sortOrder   Int             @default(0)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 
   menu  Menu       @relation(fields: [menuId], references: [id], onDelete: Cascade)
   items MenuItem[]
@@ -348,6 +349,18 @@ enum ImportStatus {
   COMPLETED
   FAILED
   CANCELLED
+}
+
+enum MenuCategory {
+  WINE
+  BREADS
+  SANDWICHES
+  FOCACCIA
+  SOUP
+  SALADS
+  PASTRIES
+  VIENNOISERIES
+  AFTERNOON_MENU
 }
 
 model CateringInquiry {

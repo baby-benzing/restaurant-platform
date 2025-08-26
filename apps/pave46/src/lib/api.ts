@@ -12,6 +12,7 @@ export interface RestaurantWithRelations extends Restaurant {
       id: string;
       name: string;
       description: string | null;
+      category: string | null;
       items: Array<{
         id: string;
         name: string;
@@ -44,7 +45,7 @@ const mockRestaurantData: RestaurantWithRelations = {
   id: '1',
   slug: 'pave46',
   name: 'Pavé',
-  description: 'An intimate neighborhood cocktail bar in Hudson Square',
+  description: 'Laid-back bakery and sandwich shop for freshly made breads including baguettes, ciabatta, focaccia and croissants. With specialty coffee offered.',
   logo: '/images/pave-logo.png',
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -112,7 +113,7 @@ const mockRestaurantData: RestaurantWithRelations = {
   contacts: [
     { type: 'phone', label: 'Reservations', value: '(212) 555-0146' },
     { type: 'email', label: 'General', value: 'info@pave46.com' },
-    { type: 'address', label: 'Location', value: '181 Hudson Street, New York, NY' },
+    { type: 'address', label: 'Location', value: '20 West 46th Street, New York, NY 10036' },
   ],
   images: [
     { url: '/images/hero.jpg', alt: 'Pavé interior', category: 'hero' },

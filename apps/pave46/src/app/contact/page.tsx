@@ -11,10 +11,10 @@ import { getRestaurantData } from '@/lib/api';
 
 export const metadata: Metadata = {
   title: 'Contact',
-  description: 'Visit Pavé46 in Hudson Square. Find our hours, location, and contact information.',
+  description: 'Visit Pavé in Midtown Manhattan near Times Square. Find our hours, location, and contact information.',
   openGraph: {
     title: 'Contact | Pavé46',
-    description: 'Visit us in Hudson Square. Find our hours and contact information.',
+    description: 'Visit us in Midtown Manhattan. Find our hours and contact information.',
   },
 };
 

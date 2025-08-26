@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-
-// Import mock data from parent route (in production, this would be from database)
-import { mockMediaArticles } from '../mockData';
+import { mediaService } from '@/services/media.service';
 
 // GET - Fetch a single media article
 export async function GET(
@@ -10,11 +7,11 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const article = mockMediaArticles.find(a => a.id === params.id);
+    const article = await mediaService.getArticle(params.id);
     
     if (!article) {
       return NextResponse.json(
-        { error: 'Media article not found' },
+        { error: 'Article not found' },
         { status: 404 }
       );
     }
@@ -29,37 +26,36 @@ export async function GET(
   }
 }
 
-// PUT - Update a media article
+// PUT - Update a single media article
 export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('auth-token');
-    
-    if (!token) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
+    // Note: Authentication is handled by middleware
     const data = await request.json();
-    const index = mockMediaArticles.findIndex(a => a.id === params.id);
     
-    if (index === -1) {
+    const updatedArticle = await mediaService.updateArticle(params.id, {
+      title: data.title,
+      description: data.description,
+      coverImage: data.coverImage,
+      publishDate: new Date(data.publishDate),
+      source: data.source,
+      author: data.author,
+      link: data.link,
+      isPremium: data.isPremium,
+      isPublished: data.isPublished,
+      sortOrder: data.sortOrder,
+    });
+    
+    if (!updatedArticle) {
       return NextResponse.json(
-        { error: 'Media article not found' },
+        { error: 'Article not found' },
         { status: 404 }
       );
     }
     
-    mockMediaArticles[index] = {
-      ...mockMediaArticles[index],
-      ...data,
-      publishDate: new Date(data.publishDate),
-      updatedAt: new Date(),
-    };
-    
-    return NextResponse.json({ article: mockMediaArticles[index] });
+    return NextResponse.json({ article: updatedArticle });
   } catch (error) {
     console.error('Error updating media article:', error);
     return NextResponse.json(
@@ -75,28 +71,15 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('auth-token');
+    // Note: Authentication is handled by middleware
+    const success = await mediaService.deleteArticle(params.id);
     
-    if (!token) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const index = mockMediaArticles.findIndex(a => a.id === params.id);
-    
-    if (index === -1) {
+    if (!success) {
       return NextResponse.json(
-        { error: 'Media article not found' },
+        { error: 'Article not found' },
         { status: 404 }
       );
     }
-    
-    mockMediaArticles.splice(index, 1);
-    
-    // Reorder remaining articles
-    mockMediaArticles.forEach((article, i) => {
-      article.sortOrder = i;
-    });
     
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -107,6 +90,3 @@ export async function DELETE(
     );
   }
 }
-
-// Export mock data for use in other routes
-export { mockMediaArticles };

@@ -61,7 +61,18 @@ export default function InfoSection({ restaurant }: InfoSectionProps) {
           <div className="bg-gray-50 rounded-2xl p-8">
             <h3 className="text-xl font-semibold mb-6 text-gray-900">Contact</h3>
             {restaurant?.contacts ? (
-              <ContactDisplay contacts={restaurant.contacts} />
+              <ContactDisplay data={{
+                address: restaurant.contacts?.find((c: any) => c.type === 'address')?.value 
+                  ? {
+                      street: restaurant.contacts.find((c: any) => c.type === 'address')?.value.split(',')[0],
+                      city: 'New York',
+                      state: 'NY',
+                      zip: '10036',
+                    } 
+                  : undefined,
+                phone: restaurant.contacts?.find((c: any) => c.type === 'phone')?.value,
+                email: restaurant.contacts?.find((c: any) => c.type === 'email')?.value,
+              }} />
             ) : (
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
@@ -92,13 +103,13 @@ export default function InfoSection({ restaurant }: InfoSectionProps) {
             <div>
               <p className="text-gray-700 font-medium mb-2">Pavé</p>
               <p className="text-gray-600">
-                511 10th Avenue<br />
-                New York, NY 10018<br />
+                20 West 46th Street<br />
+                New York, NY 10036<br />
                 Midtown Manhattan
               </p>
               <div className="mt-6">
                 <a
-                  href="https://maps.google.com/?q=511+10th+Avenue+New+York+NY+10018"
+                  href="https://maps.google.com/?q=20+West+46th+Street+New+York+NY+10036"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700"
@@ -118,7 +129,7 @@ export default function InfoSection({ restaurant }: InfoSectionProps) {
                 </svg>
                 <div>
                   <p className="font-medium text-gray-700">Quick Access</p>
-                  <p className="text-sm text-gray-600">2 minute walk from 42nd St - Port Authority</p>
+                  <p className="text-sm text-gray-600">3 minute walk from Times Square</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -127,7 +138,7 @@ export default function InfoSection({ restaurant }: InfoSectionProps) {
                 </svg>
                 <div>
                   <p className="font-medium text-gray-700">Convenient Location</p>
-                  <p className="text-sm text-gray-600">Near Hell&apos;s Kitchen & Times Square</p>
+                  <p className="text-sm text-gray-600">Heart of Midtown Manhattan near Times Square</p>
                 </div>
               </div>
             </div>
