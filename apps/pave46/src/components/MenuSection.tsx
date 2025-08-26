@@ -31,9 +31,24 @@ export default function MenuSection({ menu }: MenuSectionProps) {
         <h2 className="text-3xl md:text-4xl font-light text-center mb-2 text-gray-900">
           Our Menu
         </h2>
-        <p className="text-sm text-gray-600 text-center mb-8">
+        <p className="text-sm text-gray-600 text-center mb-4">
           Select a category to view items
         </p>
+        
+        {/* Order Button */}
+        <div className="text-center mb-8">
+          <a
+            href="https://pav-108819.square.site"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center px-6 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors shadow-lg"
+          >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            Order Online via Square
+          </a>
+        </div>
         
         {/* Category Icons */}
         <MenuCategories 

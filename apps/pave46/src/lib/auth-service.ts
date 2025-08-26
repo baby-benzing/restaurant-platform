@@ -14,7 +14,6 @@ async function checkDatabaseConnection(): Promise<boolean> {
     await prisma.$queryRaw`SELECT 1`;
     return true;
   } catch (error) {
-    console.log('Database not available, will use mock authentication');
     return false;
   }
 }
@@ -27,16 +26,13 @@ export async function getAuthService() {
   const dbAvailable = await checkDatabaseConnection();
   
   if (dbAvailable) {
-    console.log('Using real AuthService with database');
     const { AuthService } = await import('@restaurant-platform/auth');
     authServiceInstance = new AuthService();
     isMockService = false;
   } else {
-    console.log('Using MockAuthService (database not available)');
     // Create a simple mock service inline to avoid build issues
     authServiceInstance = {
       async login(data: any) {
-        console.log('Mock login attempt for:', data.email);
         
         // Mock users
         const mockUsers = [
@@ -83,12 +79,10 @@ export async function getAuthService() {
       },
       
       async logout(_token: string) {
-        console.log('Mock logout');
         return { success: true };
       },
       
       async validateSession(token: string) {
-        console.log('Mock session validation');
         // For demo, always return valid
         const { verifyToken } = await import('@restaurant-platform/auth');
         const decoded = verifyToken(token);
@@ -108,12 +102,10 @@ export async function getAuthService() {
       },
       
       async requestPasswordReset(email: string) {
-        console.log('Mock password reset for:', email);
         return { success: true };
       },
       
       async resetPassword(_token: string, _password: string) {
-        console.log('Mock password reset with token');
         return { success: true };
       },
     };
