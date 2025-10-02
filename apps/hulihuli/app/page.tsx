@@ -1,25 +1,39 @@
-import { getRestaurantData } from '@/lib/restaurant';
-import HeroBanner from '@/components/HeroBanner';
-import LocationSection from '@/components/LocationSection';
-import HoursSection from '@/components/HoursSection';
-import MenuPreview from '@/components/MenuPreview';
+'use client';
 
-export default async function Home() {
-  const restaurant = await getRestaurantData();
+import { useState } from 'react';
+import { Home, UtensilsCrossed } from 'lucide-react';
+import { LiquidGlassNav, NavItem } from '@restaurant-platform/web-common';
+import HomePage from '@/components/HomePage';
+import MenuPage from '@/components/MenuPage';
+
+export default function MainPage() {
+  const [activeSection, setActiveSection] = useState('home');
+
+  const navItems: NavItem[] = [
+    { id: 'home', icon: <Home size={24} />, label: 'Home' },
+    { id: 'menu', icon: <UtensilsCrossed size={24} />, label: 'Menu' },
+  ];
+
+  const handleSectionChange = (section: string) => {
+    setActiveSection(section);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <main className="min-h-screen bg-white">
-      {/* Hero Banner */}
-      <HeroBanner />
+      {/* Content Sections */}
+      <div className="relative">
+        {activeSection === 'home' && <HomePage />}
+        {activeSection === 'menu' && <MenuPage />}
+      </div>
 
-      {/* Hours Section */}
-      <HoursSection hours={restaurant?.hours} />
-
-      {/* Location Section */}
-      <LocationSection contact={restaurant?.contacts} />
-
-      {/* Menu Preview */}
-      <MenuPreview menu={restaurant?.menus?.[0]} />
+      {/* Liquid Glass Navigation */}
+      <LiquidGlassNav
+        items={navItems}
+        activeId={activeSection}
+        onItemClick={handleSectionChange}
+        variant={activeSection === 'home' ? 'dark' : 'light'}
+      />
     </main>
   );
 }

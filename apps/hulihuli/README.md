@@ -5,10 +5,11 @@ A modern, simplified restaurant website built with Next.js 15, featuring Google 
 ## Features
 
 ### Public Features (P0)
-- ✅ **Hero Banner** - Full-screen image slider with restaurant branding
+- ✅ **Liquid Glass Navigation** - Beautiful glass-morphism navigation bar (Home & Menu)
+- ✅ **Hero Banner** - Full-screen image slideshow with restaurant branding
 - ✅ **Operating Hours** - Display business hours with current status
 - ✅ **Location & Contact** - Address, phone, email with map integration
-- ✅ **Menu Preview** - Showcase menu items with pricing
+- ✅ **Full Menu Page** - Complete menu with sections and pricing
 
 ### Admin Features (P1)
 - ✅ **Google Single Sign-On** - Secure OAuth authentication
@@ -34,7 +35,22 @@ A modern, simplified restaurant website built with Next.js 15, featuring Google 
 - PostgreSQL database running (default port 5433)
 - Google OAuth credentials
 
-### Installation
+### Quick Setup
+
+**Option 1: Automated Setup (Recommended)**
+```bash
+cd apps/hulihuli
+./setup.sh
+```
+
+This script will:
+- Check/start the database
+- Create environment file with generated secrets
+- Install dependencies
+- Seed the database with sample data
+- Build the application
+
+**Option 2: Manual Setup**
 
 1. **Install dependencies**
    ```bash
