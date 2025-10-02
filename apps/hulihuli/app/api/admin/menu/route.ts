@@ -1,8 +1,6 @@
 import { auth } from '@/auth';
-import { PrismaClient } from '@restaurant-platform/database';
+import { prisma } from '@restaurant-platform/database';
 import { NextResponse } from 'next/server';
-
-const prisma = new PrismaClient();
 
 export async function PUT(request: Request) {
   const session = await auth();
