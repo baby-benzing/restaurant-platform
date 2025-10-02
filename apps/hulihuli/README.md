@@ -37,82 +37,26 @@ A modern, simplified restaurant website built with Next.js 15, featuring Google 
 
 ### Quick Setup
 
-**Option 1: Automated Setup (Recommended)**
 ```bash
 cd apps/hulihuli
 ./setup.sh
-```
-
-This script will:
-- Check/start the database
-- Create environment file with generated secrets
-- Install dependencies
-- Seed the database with sample data
-- Build the application
-
-**Option 2: Manual Setup**
-
-1. **Install dependencies**
-   ```bash
-   pnpm install
-   ```
-
-2. **Set up environment variables**
-   ```bash
-   cp .env.example .env
-   ```
-
-   Then edit `.env` and add:
-   - Your database connection string
-   - Auth secret (generate with: `openssl rand -base64 32`)
-   - Google OAuth credentials
-
-3. **Set up Google OAuth**
-   - Go to [Google Cloud Console](https://console.cloud.google.com/)
-   - Create a new project or select existing
-   - Enable Google+ API
-   - Create OAuth 2.0 credentials
-   - Add authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
-   - Copy Client ID and Client Secret to `.env`
-
-4. **Seed the database**
-   ```bash
-   # From the root of the monorepo
-   cd packages/database
-   pnpm db:seed
-   ```
-
-5. **Create an admin user**
-   You'll need to manually add an admin user to the database:
-   ```sql
-   -- First, create a role if it doesn't exist
-   INSERT INTO admin_roles (id, name, description, permissions, "isSystem")
-   VALUES ('role-admin', 'Admin', 'Full access', '{"*"}', true);
-
-   -- Then create the admin user with your Google email
-   INSERT INTO admin_users (id, email, "roleId", status)
-   VALUES ('user-admin', 'your-google-email@gmail.com', 'role-admin', 'ACTIVE');
-
-   -- Create a restaurant record for Hulihuli
-   INSERT INTO restaurants (id, slug, name, description)
-   VALUES ('hulihuli-id', 'hulihuli', 'Hulihuli', 'Authentic Hawaiian cuisine');
-   ```
-
-### Development
-
-```bash
-# Start the development server
 pnpm dev
-
-# Open http://localhost:3000
 ```
 
-### Building for Production
+Open http://localhost:3000
 
-```bash
-pnpm build
-pnpm start
-```
+The setup script will:
+- Start PostgreSQL database
+- Create `.env` with auto-generated secrets
+- Install dependencies
+- Populate database with Hawaiian menu
+
+### Google OAuth (Optional - for admin panel)
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create OAuth credentials
+3. Add redirect URI: `http://localhost:3000/api/auth/callback/google`
+4. Update `.env` with your credentials
 
 ## Project Structure
 

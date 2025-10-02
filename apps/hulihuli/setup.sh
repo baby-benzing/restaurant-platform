@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Hulihuli Restaurant Setup Script
-# Sets up database, environment, and seeds initial data
+# One-command setup: database, environment, and data
 
 set -e
 
@@ -9,127 +9,61 @@ echo "🌺 Hulihuli Restaurant Setup"
 echo "============================"
 echo ""
 
-# Check if running from correct directory
-if [ ! -f "package.json" ]; then
-    echo "❌ Error: Please run this script from the hulihuli app directory"
-    echo "   cd apps/hulihuli && ./setup.sh"
-    exit 1
+# 1. Start database if needed
+echo "1. Starting database..."
+if ! docker ps | grep -q restaurant-db; then
+    docker run -d --name restaurant-db \
+      -e POSTGRES_USER=postgres \
+      -e POSTGRES_PASSWORD=postgres \
+      -e POSTGRES_DB=restaurant_platform \
+      -p 5433:5432 \
+      postgres:15-alpine
+    echo "   Waiting for database..."
+    sleep 10
 fi
+echo "   ✓ Database running"
 
-# 1. Check if database is running
-echo "1. Checking database connection..."
-if docker ps | grep -q restaurant-db; then
-    echo "   ✓ Database container is running"
-else
-    echo "   ⚠️  Database not running. Starting PostgreSQL..."
-    cd ../..
-    ./setup.sh
-    cd apps/hulihuli
-    echo "   ✓ Database started"
-fi
-
-# 2. Create environment file
+# 2. Create .env
 echo ""
-echo "2. Creating environment file..."
-if [ -f ".env" ]; then
-    echo "   ⚠️  .env already exists. Creating backup..."
-    cp .env .env.backup
-fi
-
-cat > .env << 'EOF'
-# Database
+echo "2. Creating .env..."
+if [ ! -f ".env" ]; then
+cat > .env << EOF
 DATABASE_URL="postgresql://postgres:postgres@localhost:5433/restaurant_platform"
-
-# NextAuth
-AUTH_SECRET="hulihuli-dev-secret-$(openssl rand -base64 32 | tr -d '\n')"
+AUTH_SECRET="$(openssl rand -base64 32)"
 NEXTAUTH_URL="http://localhost:3000"
-
-# Google OAuth (REQUIRED - Add your credentials)
 GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
-
-# Application
 NEXT_PUBLIC_SITE_URL="http://localhost:3000"
 NODE_ENV="development"
 EOF
-
-echo "   ✓ Created .env file"
+fi
+echo "   ✓ Created .env"
 
 # 3. Install dependencies
 echo ""
-echo "3. Installing dependencies..."
-pnpm install
-echo "   ✓ Dependencies installed"
+echo "3. Installing..."
+cd ../.. && pnpm install --silent && cd apps/hulihuli
+echo "   ✓ Installed"
 
-# 4. Setup database
+# 4. Populate database
 echo ""
-echo "4. Setting up Hulihuli database..."
-
-# Generate a unique email for admin
-ADMIN_EMAIL="${ADMIN_EMAIL:-admin@hulihuli.com}"
-
-# Execute SQL setup
-docker exec restaurant-db psql -U postgres -d restaurant_platform << EOSQL
--- Create admin role (if not exists)
+echo "4. Populating database..."
+docker exec restaurant-db psql -U postgres -d restaurant_platform << 'EOSQL' 2>/dev/null
 INSERT INTO admin_roles (id, name, description, permissions, "isSystem", "createdAt", "updatedAt")
-VALUES (
-  'role-admin',
-  'Admin',
-  'Full system access',
-  '{"*"}',
-  true,
-  NOW(),
-  NOW()
-) ON CONFLICT (id) DO NOTHING;
+VALUES ('role-admin', 'Admin', 'Full access', '{"*"}', true, NOW(), NOW())
+ON CONFLICT (id) DO NOTHING;
 
--- Create admin user for Hulihuli
-INSERT INTO admin_users (
-  id,
-  email,
-  "roleId",
-  status,
-  "createdAt",
-  "updatedAt"
-) VALUES (
-  'admin-hulihuli',
-  '${ADMIN_EMAIL}',
-  'role-admin',
-  'ACTIVE',
-  NOW(),
-  NOW()
-) ON CONFLICT (email) DO UPDATE SET status = 'ACTIVE';
+INSERT INTO admin_users (id, email, "roleId", status, "createdAt", "updatedAt")
+VALUES ('admin-hulihuli', 'admin@hulihuli.com', 'role-admin', 'ACTIVE', NOW(), NOW())
+ON CONFLICT (email) DO UPDATE SET status = 'ACTIVE';
 
--- Create Hulihuli restaurant
-INSERT INTO restaurants (
-  id,
-  slug,
-  name,
-  description,
-  "createdAt",
-  "updatedAt"
-) VALUES (
-  'hulihuli-restaurant',
-  'hulihuli',
-  'Hulihuli',
-  'Authentic Hawaiian cuisine with a modern twist',
-  NOW(),
-  NOW()
-) ON CONFLICT (slug) DO NOTHING;
+INSERT INTO restaurants (id, slug, name, description, "createdAt", "updatedAt")
+VALUES ('hulihuli-restaurant', 'hulihuli', 'Hulihuli', 'Authentic Hawaiian cuisine', NOW(), NOW())
+ON CONFLICT (slug) DO NOTHING;
 
--- Link admin user to restaurant
-INSERT INTO admin_user_restaurants (
-  id,
-  "userId",
-  "restaurantId",
-  "isPrimary",
-  "createdAt"
-) VALUES (
-  'admin-hulihuli-restaurant',
-  'admin-hulihuli',
-  'hulihuli-restaurant',
-  true,
-  NOW()
-) ON CONFLICT (id) DO NOTHING;
+INSERT INTO admin_user_restaurants (id, "userId", "restaurantId", "isPrimary", "createdAt")
+VALUES ('admin-hulihuli-restaurant', 'admin-hulihuli', 'hulihuli-restaurant', true, NOW())
+ON CONFLICT (id) DO NOTHING;
 
 -- Add operating hours
 INSERT INTO operating_hours ("restaurantId", "dayOfWeek", "openTime", "closeTime", "isClosed", "createdAt", "updatedAt")
@@ -188,38 +122,15 @@ VALUES
 ON CONFLICT DO NOTHING;
 EOSQL
 
-echo "   ✓ Database seeded with Hulihuli data"
-
-# 5. Build the app
-echo ""
-echo "5. Building application..."
-pnpm build || echo "   ⚠️  Build failed, but you can still run dev mode"
+echo "   ✓ Database populated"
 
 echo ""
-echo "✅ Hulihuli Setup Complete!"
+echo "✅ Setup Complete!"
 echo ""
-echo "📝 Next Steps:"
+echo "Start the site:"
+echo "  pnpm dev"
 echo ""
-echo "1. Configure Google OAuth:"
-echo "   - Go to https://console.cloud.google.com/"
-echo "   - Create OAuth credentials"
-echo "   - Update GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in .env"
+echo "Then visit:"
+echo "  http://localhost:3000"
 echo ""
-echo "2. Update admin email (if needed):"
-echo "   - Current admin email: ${ADMIN_EMAIL}"
-echo "   - To change: ADMIN_EMAIL=your-email@gmail.com ./setup.sh"
-echo ""
-echo "3. Add hero image:"
-echo "   - Place image at: public/images/hulihuli-hero.jpg"
-echo "   - Recommended: 1920x1080, < 500KB"
-echo ""
-echo "4. Start development server:"
-echo "   pnpm dev"
-echo ""
-echo "5. Visit the site:"
-echo "   Public:  http://localhost:3000"
-echo "   Admin:   http://localhost:3000/auth/signin"
-echo ""
-echo "📚 Documentation:"
-echo "   - Full setup: SETUP.md"
-echo "   - README: README.md"
+echo "Note: Add Google OAuth credentials to .env for admin panel"
